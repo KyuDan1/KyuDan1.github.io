@@ -5,10 +5,11 @@
 * Chung-Ang University
 * 84 Heukseok-ro, Dongjak-gu, Seoul, South Korea
 * Contact: wjdrbeks1021@cau.ac.kr or @gmail.com
+
 * * *
 
 **Now**
-* (2023.03~) Undergraduate Intern with professor NamJoon Kim from Seoul National University CAPP and Hyun Gon Ryu from NVIDIA
+* (2023.03~) Undergraduate Intern with professor Nam-Joon Kim from Seoul National University CAPP and Hyun Gon Ryu from NVIDIA
 * (2023.04~) Leader of Supporters of Department of Next Generation Semiconductor, Chung-Ang University
 
 
@@ -16,10 +17,10 @@
 * * *
 
 **Research Interests**
- Artificial Intelligence with Automatic Speech Recognition (ASR)
- Language Model with Algorithm
- Linear Algebra in AI
- Explainable Artificial Intelligence(XAI)
+ - Artificial Intelligence with Automatic Speech Recognition (ASR)
+ - Language Model with Algorithm
+ - Linear Algebra in AI
+ - Explainable Artificial Intelligence(XAI)
 
 * * *
 
@@ -38,7 +39,7 @@ Kyudan Jung, Nam-Joon Kim, Hyun Gon Ryu, Hyuk-Jae Lee
 
 
 **Links**
-github: `https://github.com/KyuDan1`
-huggingface: `https://huggingface.co/Kyudan`
-kaggle: `https://www.kaggle.com/kxxdxxj`
-Linkedin: `https://www.linkedin.com/in/kyudanjung/`
+* github: `https://github.com/KyuDan1`
+* huggingface: `https://huggingface.co/Kyudan`
+* kaggle: `https://www.kaggle.com/kxxdxxj`
+* Linkedin: `https://www.linkedin.com/in/kyudanjung/`
