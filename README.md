@@ -5,7 +5,7 @@
 * Chung-Ang University
 * 84 Heukseok-ro, Dongjak-gu, Seoul, South Korea
 * Contact: wjdrbeks1021@cau.ac.kr or @gmail.com
-
+* <a href="https://www.linkedin.com/in/kyudanjung/" target="_blank">Linkedin: kyudanjung</a>
 * * *
 
 **Now**
@@ -39,7 +39,5 @@ Kyudan Jung, Nam-Joon Kim, Hyun Gon Ryu, Hyuk-Jae Lee
 
 
 **Links**
-* github: `https://github.com/KyuDan1`
-* huggingface: `https://huggingface.co/Kyudan`
-* kaggle: `https://www.kaggle.com/kxxdxxj`
-* Linkedin: `https://www.linkedin.com/in/kyudanjung/`
+* <a href="https://github.com/KyuDan1" target="_blank">github: KyuDan1</a><br>
+* <a href="https://www.linkedin.com/in/kyudanjung/" target="_blank">Linkedin: kyudanjung</a>
