@@ -33,10 +33,6 @@ Kyudan Jung, Seungmin Bae, Nam-Joon Kim, Hyun Gon Ryu, Hyuk-Jae Lee
 (accepted) "Enhancing ASR Performance through Relative Word Frequency in OCR and Normal Word Frequency Analysis" 
 Kyudan Jung, Seungmin Bae, Nam-Joon Kim, Jaepil Lim, Hyun Gon Ryu, Hyuk-Jae Lee
 
-* The 11th IEEE International Conference on Consumer Electronics – Taiwan, 2024 (IEEE ICCE-TW 2024) 
-(submitted) "Analysis about Theoretical Foundations for Method to Enhancing ASR Performance using OCR Word Frequency Differences"
-Kyudan Jung, Nam-Joon Kim, Hyun Gon Ryu, Hyuk-Jae Lee
-
 
 **Links**
 * <a href="https://github.com/KyuDan1" target="_blank">github: KyuDan1</a><br>
