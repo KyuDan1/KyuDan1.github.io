@@ -162,7 +162,7 @@ body {
 }
 .paper-card.top .pc-venue { color: var(--paper-top); }
 
-.paper-stem { position: absolute; width: 1px; z-index: 1; }
+.paper-stem { position: absolute; width: 2px; z-index: 1; }
 
 .connector { position: absolute; width: 1px; z-index: 1; }
 
@@ -504,7 +504,7 @@ sortedPapers.forEach(p => {
     const stemTop = cardY + PAPER_CARD_H;
     const stemBottom = expPos.y;
     const stemColor = p.kw === 'top'
-      ? 'rgba(200,133,10,0.3)' : 'rgba(136,136,136,0.2)';
+      ? 'rgba(200,133,10,0.55)' : 'rgba(100,100,120,0.4)';
     const stem = document.createElement('div');
     stem.className = 'paper-stem';
     stem.style.left = p.x + 'px';
@@ -525,7 +525,7 @@ sortedPapers.forEach(p => {
       stem2.style.left = (p.x + 6) + 'px';
       stem2.style.top = stemTop + 'px';
       stem2.style.height = (stemBottom - stemTop) + 'px';
-      stem2.style.background = `${shared.color}40`;
+      stem2.style.background = `${shared.color}66`;
       canvas.appendChild(stem2);
     }
   }
