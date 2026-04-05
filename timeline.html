@@ -545,14 +545,14 @@ abovePapers.forEach(p => {
   renderPaper(p, cardY, 'up');
 });
 
-// Below papers (education connections)
+// Middle papers (education connections) — between experience and education bars
+const middleTopY = EDU_Y - (numBelowRows) * (PAPER_CARD_H + PAPER_GAP) - 20;
 belowPapers.forEach(p => {
-  const cardY = belowTopY + p.row * (PAPER_CARD_H + PAPER_GAP);
+  const cardY = middleTopY + p.row * (PAPER_CARD_H + PAPER_GAP);
   renderPaper(p, cardY, 'down');
 });
 
-const belowMaxRow = belowPapers.reduce((m, p) => Math.max(m, p.row), -1);
-canvas.style.minHeight = (belowTopY + (belowMaxRow + 1) * (PAPER_CARD_H + PAPER_GAP) + 60) + 'px';
+canvas.style.minHeight = (AXIS_Y + 60) + 'px';
 
 // ── Tooltip ──
 const tooltip = document.getElementById('tooltip');
