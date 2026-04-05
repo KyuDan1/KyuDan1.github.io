@@ -353,6 +353,12 @@ for (let y = START_YEAR; y <= END_YEAR; y++) {
       el.style.top = (AXIS_Y - 8) + 'px';
       el.innerHTML = `<div class="tick"></div><div class="label">${y}</div>`;
       canvas.appendChild(el);
+      // Vertical year line (2024, 2025, 2026)
+      if (y >= 2024 && y <= 2026) {
+        const line = document.createElement('div');
+        line.style.cssText = `position:absolute;left:${x}px;top:0;width:1px;height:${AXIS_Y}px;background:rgba(0,0,0,0.07);z-index:0;`;
+        canvas.appendChild(line);
+      }
     } else {
       const el = document.createElement('div');
       el.className = 'quarter-marker';
