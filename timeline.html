@@ -22,7 +22,7 @@
   --col-naver: #00C9B1;
   --col-qualcomm: #3253DC;
   --paper-speech: #F5C518;
-  --paper-nlp: #F4A7C1;
+  --paper-nlp: #5BAFDB;
   --paper-other: #999;
 }
 
@@ -199,10 +199,10 @@ body {
   letter-spacing:0.5px; margin-bottom:5px;
 }
 .tooltip .tt-tag.speech { background:rgba(245,197,24,0.15); color:var(--paper-speech); }
-.tooltip .tt-tag.nlp { background:rgba(233,87,138,0.15); color:var(--paper-nlp); }
+.tooltip .tt-tag.nlp { background:rgba(91,175,219,0.15); color:var(--paper-nlp); }
 .tooltip .tt-tag.other { background:rgba(153,153,153,0.15); color:var(--paper-other); }
-.tooltip .tt-tag.speech-nlp { background:rgba(245,197,24,0.15); color:var(--paper-speech); }
-.tooltip .tt-venue.speech-nlp { color:var(--paper-speech); }
+.tooltip .tt-tag.speech-nlp { background:rgba(245,197,24,0.12); color:var(--paper-speech); }
+.tooltip .tt-venue.speech-nlp { color:var(--text-dim); }
 
 .row-label {
   position: absolute; left: 8px;
@@ -233,7 +233,6 @@ body {
   <div style="display:flex;justify-content:center;gap:18px;margin-top:12px;font-size:0.73rem;color:var(--text-dim);">
     <span style="display:flex;align-items:center;gap:5px;"><span style="width:3px;height:14px;background:var(--paper-speech);border-radius:1px;"></span>Speech</span>
     <span style="display:flex;align-items:center;gap:5px;"><span style="width:3px;height:14px;background:var(--paper-nlp);border-radius:1px;"></span>NLP</span>
-    <span style="display:flex;align-items:center;gap:5px;"><span style="display:flex;"><span style="width:3px;height:14px;background:var(--paper-speech);border-radius:1px 0 0 1px;"></span><span style="width:3px;height:14px;background:var(--paper-nlp);border-radius:0 1px 1px 0;"></span></span>Speech &amp; NLP</span>
     <span style="display:flex;align-items:center;gap:5px;"><span style="width:3px;height:14px;background:var(--paper-other);border-radius:1px;"></span>Other</span>
   </div>
 </div>
