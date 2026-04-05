@@ -93,6 +93,7 @@ body {
   font-size: 0.72rem; font-weight: 700; letter-spacing: 0.3px;
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
   color: #fff; z-index: 1; opacity: 0.92;
+  cursor: default;
 }
 
 /* Experience bars */
@@ -105,6 +106,14 @@ body {
   border: 1px solid transparent; z-index: 3; color: #fff;
 }
 .exp-bar:hover { transform: translateY(-2px); z-index:10; box-shadow: 0 4px 16px rgba(0,0,0,0.15); }
+
+.bar-date {
+  position: absolute; top: -16px;
+  font-size: 0.58rem; font-family: 'JetBrains Mono', monospace;
+  color: var(--text-dim); white-space: nowrap; font-weight: 500;
+}
+.bar-date.start { left: 0; }
+.bar-date.end { right: 0; }
 
 .paper-card {
   position: absolute; z-index: 4; cursor: pointer;
@@ -189,8 +198,8 @@ body {
   <div class="legend-item"><div class="legend-dot" style="background:#0F0F70"></div>Seoul National Univ.</div>
   <div class="legend-item"><div class="legend-dot" style="background:#76B900"></div>NVIDIA</div>
   <div class="legend-item"><div class="legend-dot" style="background:#7c6bc4"></div>Neowine</div>
-  <div class="legend-item"><div class="legend-dot" style="background:#d19a66"></div>KRAFTON</div>
-  <div class="legend-item"><div class="legend-dot" style="background:#00C9B1"></div>NAVER Cloud</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#f9423a"></div>KRAFTON</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#00D25A"></div>NAVER Cloud</div>
   <div class="legend-item"><div class="legend-dot" style="background:#3253DC"></div>Qualcomm AI</div>
   <div class="legend-item">
     <div class="legend-dot" style="border:2px solid #c8850a;background:transparent"></div>Top Venue
@@ -264,10 +273,10 @@ const experiences = [
     color:'#004187', track:0 },
   { id:'krafton', start:'2025.06', end:'2025.08', title:'DL Research Engineer Intern', org:'KRAFTON',
     desc:'Deep Learning Div., AI Audio Gen Team. Advised by Taehong Moon. Built dataset & preprocessing pipeline for TTS and SLM/ALM.',
-    color:'#d19a66', track:1 },
+    color:'#f9423a', track:1 },
   { id:'naver', start:'2025.10', end:'2026.04', title:'Foundation Research Residency', org:'NAVER Cloud',
     desc:'WBL (World Best Language model) project. Evaluating omni-model, data engineering in AudioLM & full-duplex model, researching continuous audio encoder.',
-    color:'#00C9B1', track:0 },
+    color:'#00D25A', track:0 },
   { id:'qualcomm', start:'2026.04', end:'2026.10', title:'Speech AI Research Intern', org:'Qualcomm AI Research',
     desc:'Speech AI Research.',
     color:'#3253DC', track:0 },
@@ -341,7 +350,12 @@ education.forEach(edu => {
   bar.style.width = (x2 - x1) + 'px';
   bar.style.top = EDU_Y + 'px';
   bar.style.background = edu.color;
-  bar.textContent = edu.label;
+  const eduLabel = document.createElement('span');
+  eduLabel.textContent = edu.label;
+  bar.appendChild(eduLabel);
+  // Date labels
+  const ds = document.createElement('span'); ds.className = 'bar-date start'; ds.textContent = edu.start; bar.appendChild(ds);
+  const de = document.createElement('span'); de.className = 'bar-date end'; de.textContent = edu.end; bar.appendChild(de);
   canvas.appendChild(bar);
 });
 
@@ -363,6 +377,9 @@ experiences.forEach(exp => {
   label.textContent = `${exp.org} — ${exp.title}`;
   label.style.cssText = 'overflow:hidden;text-overflow:ellipsis';
   bar.appendChild(label);
+  // Date labels above bar
+  const ds = document.createElement('span'); ds.className = 'bar-date start'; ds.textContent = exp.start; bar.appendChild(ds);
+  const de = document.createElement('span'); de.className = 'bar-date end'; de.textContent = exp.end; bar.appendChild(de);
 
   // Connector to axis
   const conn = document.createElement('div');
