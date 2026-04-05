@@ -251,7 +251,7 @@ const AXIS_Y = EDU_Y + 56;
 
 // ── Education (backbone) ──
 const education = [
-  { id:'cau', start:'2023.01', end:'2025.08', label:'Chung-Ang University, B.S. Mathematics & Next-Gen Semiconductor', color:'#2155A4' },
+  { id:'cau', start:'2023.01', end:'2025.08', startNote:'(2학년)', label:'Chung-Ang University, B.S. Mathematics & Next-Gen Semiconductor', color:'#2155A4' },
   { id:'kaist', start:'2025.09', end:'2027.02', label:'KAIST, M.S., Ph.D. Integrated, Kim Jaechul Graduate School of AI at Korea Advanced Institute of Science and Technology (KAIST AI)', color:'#004187' },
 ];
 
@@ -362,7 +362,7 @@ education.forEach(edu => {
   eduLabel.textContent = edu.label;
   bar.appendChild(eduLabel);
   // Date labels
-  const ds = document.createElement('span'); ds.className = 'bar-date start'; ds.textContent = edu.start; bar.appendChild(ds);
+  const ds = document.createElement('span'); ds.className = 'bar-date start'; ds.textContent = edu.start + (edu.startNote ? ' ' + edu.startNote : ''); bar.appendChild(ds);
   const de = document.createElement('span'); de.className = 'bar-date end'; de.textContent = edu.end; bar.appendChild(de);
   canvas.appendChild(bar);
 });
