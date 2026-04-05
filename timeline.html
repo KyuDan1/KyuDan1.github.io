@@ -477,9 +477,13 @@ experiences.forEach(exp => {
 // ── Paper cards (above experience bars) ──
 const paperBottomY = EXP_Y_BASE - 24;
 
+// Per-x offset: higher rows shift right so stems don't overlap
+const STEM_SHIFT = 5; // px shift per row
+
 sortedPapers.forEach(p => {
-  const cardX = p.x - PAPER_CARD_W / 2;
-  // row 0 = closest to bars (bottom), higher rows go up
+  const xShift = p.row * STEM_SHIFT;
+  const stemX = p.x + xShift;
+  const cardX = stemX - PAPER_CARD_W / 2;
   const cardY = paperBottomY - (p.row + 1) * (PAPER_CARD_H + PAPER_GAP);
 
   // Card
@@ -506,7 +510,7 @@ sortedPapers.forEach(p => {
     const stemBottom = expPos.y;
     const stem = document.createElement('div');
     stem.className = 'paper-stem';
-    stem.style.left = p.x + 'px';
+    stem.style.left = stemX + 'px';
     stem.style.top = stemTop + 'px';
     stem.style.height = (stemBottom - stemTop) + 'px';
     stem.style.background = `${expPos.color}88`;
@@ -521,7 +525,7 @@ sortedPapers.forEach(p => {
       const stemBottom = shared.y;
       const stem2 = document.createElement('div');
       stem2.className = 'paper-stem';
-      stem2.style.left = (p.x + 6) + 'px';
+      stem2.style.left = (stemX + 6) + 'px';
       stem2.style.top = stemTop + 'px';
       stem2.style.height = (stemBottom - stemTop) + 'px';
       stem2.style.background = `${shared.color}66`;
