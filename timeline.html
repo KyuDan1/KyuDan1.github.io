@@ -118,6 +118,9 @@ body {
   filter: brightness(0) invert(1);
   object-fit: contain;
 }
+.bar-logo.logo-sm {
+  height: 13px;
+}
 .edu-bar .bar-logo {
   height: 20px; margin-right: 8px;
 }
@@ -293,10 +296,10 @@ const experiences = [
     color:'#f9423a', track:1, logo:'images/KRAFTON.png' },
   { id:'naver', start:'2025.10', end:'2026.04', title:'Foundation Research Residency', org:'NAVER Cloud Foundation Research Team',
     desc:'WBL (World Best Language model) project. Evaluating omni-model, data engineering in AudioLM & full-duplex model, researching continuous audio encoder.',
-    color:'#00D25A', track:0, logo:'images/navercloud.svg' },
+    color:'#00D25A', track:0, logo:'images/navercloud.svg', logoSm:true },
   { id:'qualcomm', start:'2026.04', end:'2026.10', title:'Speech AI Research Intern', org:'Qualcomm AI Research',
     desc:'Speech AI Research.',
-    color:'#3253DC', track:0, logo:'images/Qualcomm.png' },
+    color:'#3253DC', track:0, logo:'images/qualcomm.png' },
 ];
 
 // ── Papers ──
@@ -394,7 +397,7 @@ experiences.forEach(exp => {
   bar.style.boxShadow = `0 2px 8px ${exp.color}22`;
 
   if (exp.logo) {
-    const img = document.createElement('img'); img.className = 'bar-logo'; img.src = exp.logo; img.alt = ''; bar.appendChild(img);
+    const img = document.createElement('img'); img.className = 'bar-logo' + (exp.logoSm ? ' logo-sm' : ''); img.src = exp.logo; img.alt = ''; bar.appendChild(img);
   }
   const label = document.createElement('span');
   label.textContent = `${exp.org} — ${exp.title}`;
