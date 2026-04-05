@@ -237,10 +237,12 @@ const CANVAS_W = PAD_LEFT + totalMonths * PX_PER_MONTH + 80;
 
 function d2x(dateStr, isEnd) {
   const parts = dateStr.split('.').map(Number);
-  const y = parts[0], m = parts[1], d = parts[2] || (isEnd ? 31 : 1);
-  // day fraction within the month (0~1)
-  const dayFrac = (d - 1) / 30;
-  const extra = isEnd && !parts[2] ? 1 : 0; // add 1 month for end dates without day
+  const y = parts[0], m = parts[1];
+  const hasDay = parts.length >= 3;
+  // No day specified: start=1st, end=last day (add 1 full month)
+  // Day specified: use day fraction within month
+  const extra = (isEnd && !hasDay) ? 1 : 0;
+  const dayFrac = hasDay ? (parts[2] - 1) / 30 : 0;
   return PAD_LEFT + ((y - START_YEAR)*12 + (m - START_MONTH) + extra + dayFrac) * PX_PER_MONTH;
 }
 
