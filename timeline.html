@@ -7,20 +7,22 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 :root {
-  --bg: #0a0a0f;
-  --bg-card: #12121a;
-  --border: #1e1e2e;
-  --text: #e0e0e8;
-  --text-dim: #8888a0;
-  --accent-snu: #4a90d9;
-  --accent-neowine: #7c6bc4;
-  --accent-cau: #5b8c5a;
-  --accent-kaist: #e06c75;
-  --accent-krafton: #d19a66;
-  --accent-naver: #56b6c2;
-  --accent-qualcomm: #c678dd;
-  --paper-top: #f0c040;
-  --paper-misc: #707085;
+  --bg: #ffffff;
+  --bg-card: #f8f9fb;
+  --border: #e0e2e8;
+  --text: #1a1a2e;
+  --text-dim: #6b7080;
+  --text-light: #9098a8;
+  --col-cau: #2155A4;
+  --col-kaist: #004187;
+  --col-snu: #0F0F70;
+  --col-nvidia: #76B900;
+  --col-neowine: #7c6bc4;
+  --col-krafton: #d19a66;
+  --col-naver: #00C9B1;
+  --col-qualcomm: #3253DC;
+  --paper-top: #c8850a;
+  --paper-misc: #888;
 }
 
 * { margin:0; padding:0; box-sizing:border-box; }
@@ -35,25 +37,23 @@ body {
 
 .header {
   text-align: center;
-  padding: 50px 20px 20px;
+  padding: 48px 20px 16px;
 }
 .header h1 {
-  font-size: 2.2rem;
+  font-size: 2rem;
   font-weight: 700;
-  background: linear-gradient(135deg, #a78bfa, #60a5fa, #34d399);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  color: #1a1a2e;
 }
-.header p { color: var(--text-dim); margin-top: 6px; font-size: 0.95rem; font-weight: 300; }
-.header .hint { color: var(--text-dim); margin-top: 14px; font-size: 0.78rem; opacity: 0.5; }
+.header p { color: var(--text-dim); margin-top: 6px; font-size: 0.92rem; font-weight: 300; }
+.header .hint { color: var(--text-light); margin-top: 12px; font-size: 0.76rem; }
 
 .legend {
   display: flex; justify-content: center; flex-wrap: wrap;
-  gap: 14px; padding: 8px 20px 24px;
+  gap: 14px; padding: 6px 20px 22px;
 }
-.legend-item { display:flex; align-items:center; gap:5px; font-size:0.75rem; color:var(--text-dim); }
+.legend-item { display:flex; align-items:center; gap:5px; font-size:0.73rem; color:var(--text-dim); }
 .legend-dot { width:10px; height:10px; border-radius:50%; flex-shrink:0; }
+.legend-rect { width:16px; height:8px; border-radius:3px; flex-shrink:0; }
 
 .timeline-wrapper {
   width: 100%; overflow-x: auto; overflow-y: visible;
@@ -62,105 +62,112 @@ body {
 }
 .timeline-wrapper:active { cursor: grabbing; }
 .timeline-wrapper::-webkit-scrollbar { height: 6px; }
-.timeline-wrapper::-webkit-scrollbar-track { background: var(--bg); }
-.timeline-wrapper::-webkit-scrollbar-thumb { background: #333; border-radius: 3px; }
+.timeline-wrapper::-webkit-scrollbar-track { background: #f0f0f0; }
+.timeline-wrapper::-webkit-scrollbar-thumb { background: #c0c0c0; border-radius: 3px; }
 
 .timeline-canvas { position: relative; }
 
 .time-axis {
   position: absolute; left: 0; right: 0; height: 2px;
-  background: linear-gradient(90deg, transparent, #333 3%, #333 97%, transparent);
+  background: linear-gradient(90deg, transparent, #bbb 3%, #bbb 97%, transparent);
 }
 
 .year-marker {
   position: absolute; transform: translateX(-50%); text-align: center;
 }
-.year-marker .tick { width:1px; height:18px; background:#444; margin:0 auto; }
+.year-marker .tick { width:1px; height:18px; background:#aaa; margin:0 auto; }
 .year-marker .label {
   font-size:0.75rem; color:var(--text-dim); margin-top:5px;
   font-family:'JetBrains Mono',monospace; font-weight:500;
 }
 .quarter-marker {
-  position:absolute; width:1px; height:6px; background:#222; transform:translateX(-50%);
+  position:absolute; width:1px; height:6px; background:#ddd; transform:translateX(-50%);
 }
 
-.exp-bar {
-  position: absolute; height: 42px; border-radius: 8px;
-  cursor: pointer; transition: transform 0.2s, box-shadow 0.2s, filter 0.15s;
-  display: flex; align-items: center; padding: 0 14px;
-  font-size: 0.7rem; font-weight: 600; letter-spacing: 0.2px;
+/* Education backbone bars */
+.edu-bar {
+  position: absolute; height: 36px; border-radius: 6px;
+  display: flex; align-items: center; padding: 0 16px;
+  font-size: 0.72rem; font-weight: 700; letter-spacing: 0.3px;
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-  border: 1px solid transparent; z-index: 2; color: #fff;
+  color: #fff; z-index: 1; opacity: 0.92;
 }
-.exp-bar:hover { transform: translateY(-2px); z-index:10; filter: brightness(1.25); }
+
+/* Experience bars */
+.exp-bar {
+  position: absolute; height: 36px; border-radius: 7px;
+  cursor: pointer; transition: transform 0.2s, box-shadow 0.2s;
+  display: flex; align-items: center; padding: 0 12px;
+  font-size: 0.68rem; font-weight: 600; letter-spacing: 0.2px;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  border: 1px solid transparent; z-index: 3; color: #fff;
+}
+.exp-bar:hover { transform: translateY(-2px); z-index:10; box-shadow: 0 4px 16px rgba(0,0,0,0.15); }
 
 .paper-card {
-  position: absolute; z-index: 3; cursor: pointer;
+  position: absolute; z-index: 4; cursor: pointer;
   background: var(--bg-card); border: 1px solid var(--border);
-  border-radius: 6px; padding: 6px 10px; width: 170px;
+  border-radius: 6px; padding: 6px 10px; width: 175px;
   transition: transform 0.15s, border-color 0.15s, box-shadow 0.15s;
   overflow: hidden;
 }
 .paper-card:hover {
   transform: translateY(2px); z-index: 20;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.1);
 }
 .paper-card.top { border-left: 3px solid var(--paper-top); }
 .paper-card.top:hover { border-color: var(--paper-top); }
 .paper-card.misc { border-left: 3px solid var(--paper-misc); }
 .paper-card.misc:hover { border-color: var(--paper-misc); }
 .paper-card .pc-title {
-  font-size: 0.65rem; font-weight: 600; line-height: 1.3;
+  font-size: 0.64rem; font-weight: 600; line-height: 1.35;
   color: var(--text); display: -webkit-box;
   -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
 }
 .paper-card .pc-venue {
-  font-size: 0.58rem; color: var(--text-dim); margin-top: 3px;
+  font-size: 0.57rem; color: var(--text-dim); margin-top: 3px;
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
-.paper-card.top .pc-venue { color: var(--paper-top); opacity: 0.8; }
+.paper-card.top .pc-venue { color: var(--paper-top); }
 
-.paper-stem {
-  position: absolute; width: 1px; z-index: 1;
-}
+.paper-stem { position: absolute; width: 1px; z-index: 1; }
 
-.connector {
-  position: absolute; width: 1px; background: #2a2a3a; z-index: 1;
-}
+.connector { position: absolute; width: 1px; z-index: 1; }
 
+/* Tooltip */
 .tooltip {
-  position: fixed; background: #1a1a2e; border: 1px solid #2a2a4e;
+  position: fixed; background: #fff; border: 1px solid #dde;
   border-radius: 10px; padding: 14px 18px; max-width: 400px;
   font-size: 0.82rem; line-height: 1.5; color: var(--text);
-  box-shadow: 0 8px 32px rgba(0,0,0,0.5); pointer-events: none;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.12); pointer-events: none;
   opacity: 0; transition: opacity 0.15s; z-index: 100;
 }
 .tooltip.show { opacity: 1; }
 .tooltip .tt-title { font-weight: 700; font-size: 0.9rem; margin-bottom: 4px; }
 .tooltip .tt-org { color: var(--text-dim); font-size: 0.78rem; margin-bottom: 6px; }
 .tooltip .tt-date { font-family:'JetBrains Mono',monospace; font-size:0.72rem; color:var(--text-dim); margin-bottom:6px; }
-.tooltip .tt-desc { color: #bbb; font-size: 0.78rem; }
+.tooltip .tt-desc { color: #555; font-size: 0.78rem; }
 .tooltip .tt-paper-title { font-weight:600; font-size:0.85rem; margin-bottom:4px; }
 .tooltip .tt-venue { font-size:0.75rem; color:var(--text-dim); margin-bottom:4px; }
 .tooltip .tt-venue.top { color: var(--paper-top); }
-.tooltip .tt-link { font-size:0.72rem; color:#60a5fa; }
+.tooltip .tt-link { font-size:0.72rem; color:#2155A4; }
 .tooltip .tt-tag {
   display:inline-block; padding:2px 8px; border-radius:4px;
   font-size:0.63rem; font-weight:600; text-transform:uppercase;
   letter-spacing:0.5px; margin-bottom:5px;
 }
-.tooltip .tt-tag.top { background:rgba(240,192,64,0.2); color:var(--paper-top); }
-.tooltip .tt-tag.misc { background:rgba(136,136,136,0.2); color:var(--paper-misc); }
+.tooltip .tt-tag.top { background:rgba(200,133,10,0.12); color:var(--paper-top); }
+.tooltip .tt-tag.misc { background:rgba(136,136,136,0.12); color:var(--paper-misc); }
 
 .back-link {
-  position:fixed; top:20px; left:20px; color:var(--text-dim);
+  position:fixed; top:18px; left:18px; color:var(--text-dim);
   text-decoration:none; font-size:0.85rem; z-index:50; transition:color 0.2s;
 }
 .back-link:hover { color:var(--text); }
 
 @media (max-width: 768px) {
-  .header h1 { font-size: 1.5rem; }
-  .timeline-wrapper { padding: 0 20px 40px; }
+  .header h1 { font-size: 1.4rem; }
+  .timeline-wrapper { padding: 0 16px 40px; }
 }
 </style>
 </head>
@@ -171,22 +178,23 @@ body {
 <div class="header">
   <h1>AI Research Timeline</h1>
   <p>Kyudan Jung &mdash; Research Experiences &amp; Publications</p>
-  <div class="hint">Scroll horizontally &middot; Hover over bars &amp; cards for details &middot; Click papers to open</div>
+  <div class="hint">Scroll horizontally &middot; Hover for details &middot; Click papers to open</div>
 </div>
 
 <div class="legend">
-  <div class="legend-item"><div class="legend-dot" style="background:var(--accent-snu)"></div>Seoul National Univ.</div>
-  <div class="legend-item"><div class="legend-dot" style="background:var(--accent-neowine)"></div>Neowine</div>
-  <div class="legend-item"><div class="legend-dot" style="background:var(--accent-cau)"></div>Chung-Ang Univ.</div>
-  <div class="legend-item"><div class="legend-dot" style="background:var(--accent-kaist)"></div>KAIST AI</div>
-  <div class="legend-item"><div class="legend-dot" style="background:var(--accent-krafton)"></div>KRAFTON</div>
-  <div class="legend-item"><div class="legend-dot" style="background:var(--accent-naver)"></div>NAVER Cloud</div>
-  <div class="legend-item"><div class="legend-dot" style="background:var(--accent-qualcomm)"></div>Qualcomm AI</div>
+  <div class="legend-item"><div class="legend-rect" style="background:#2155A4"></div>Chung-Ang Univ. (Undergrad)</div>
+  <div class="legend-item"><div class="legend-rect" style="background:#004187"></div>KAIST (Graduate)</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#0F0F70"></div>Seoul National Univ.</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#76B900"></div>NVIDIA</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#7c6bc4"></div>Neowine</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#d19a66"></div>KRAFTON</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#00C9B1"></div>NAVER Cloud</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#3253DC"></div>Qualcomm AI</div>
   <div class="legend-item">
-    <div class="legend-dot" style="border:2px solid var(--paper-top);background:transparent"></div>Top Venue
+    <div class="legend-dot" style="border:2px solid #c8850a;background:transparent"></div>Top Venue
   </div>
   <div class="legend-item">
-    <div class="legend-dot" style="border:2px solid var(--paper-misc);background:transparent"></div>Other
+    <div class="legend-dot" style="border:2px solid #888;background:transparent"></div>Other
   </div>
 </div>
 
@@ -198,12 +206,10 @@ body {
 
 <script>
 const START_YEAR = 2023, START_MONTH = 1;
-const END_YEAR = 2027, END_MONTH = 1;
+const END_YEAR = 2027, END_MONTH = 3;
 const PX_PER_MONTH = 110;
 const PAD_LEFT = 80;
-const AXIS_Y = 280;
-const TRACK_GAP = 56;
-const CARD_W = 170;
+const CARD_W = 175;
 const CARD_H = 56;
 const CARD_GAP = 6;
 
@@ -215,37 +221,57 @@ function d2x(dateStr) {
   return PAD_LEFT + ((y - START_YEAR)*12 + (m - START_MONTH)) * PX_PER_MONTH;
 }
 
-// ── Data ──
+// ── Layout constants ──
+// Education backbone row (topmost)
+const EDU_Y = 50;
+// Experience tracks below education
+const EXP_Y_BASE = 110;
+const EXP_TRACK_H = 46;
+// Axis
+const AXIS_Y = EXP_Y_BASE + 4 * EXP_TRACK_H + 20;
+
+// ── Education (backbone) ──
+const education = [
+  { id:'cau', start:'2023.01', end:'2025.08', label:'Chung-Ang University — B.S. Mathematics & Next-Gen Semiconductor', color:'#2155A4' },
+  { id:'kaist', start:'2025.09', end:'2027.02', label:'KAIST — M.S. Graduate School of AI', color:'#004187' },
+];
+
+// ── Experiences ──
+// track: 0=directly below edu, 1=next, etc.
 const experiences = [
   { id:'snu', start:'2023.03', end:'2024.11', title:'Undergrad Intern', org:'Seoul National University',
-    desc:'With visiting Assoc. Prof. Nam-Joon Kim\'s Speech AI team (alumni from Prof. Hyuk-Jae Lee) with Hyungon Ryu from NVIDIA.',
-    color:'#4a90d9', track:0 },
+    desc:'Speech AI team with visiting Assoc. Prof. Nam-Joon Kim (alumni from Prof. Hyuk-Jae Lee). Co-researched with Seungmin Bae.',
+    color:'#0F0F70', track:0 },
+  { id:'nvidia', start:'2023.03', end:'2024.11', title:'Joint Research with NVIDIA', org:'NVIDIA',
+    desc:'Collaborated with Hyungon Ryu (Director, NVIDIA) on ASR and Speech AI research. Co-presented at IEEE ICEIC 2024 and AICAS 2024 with Seungmin Bae.',
+    color:'#76B900', track:1 },
   { id:'neowine', start:'2023.07', end:'2023.08', title:'Research Intern', org:'Neowine Co., Ltd.',
     desc:'Reviewing lecture materials for circuit design course using ChatGPT with Prof. Sang-ho Kim from Seoul National University.',
-    color:'#7c6bc4', track:1 },
+    color:'#7c6bc4', track:2 },
   { id:'nlp', start:'2024.06', end:'2024.08', title:'Study NLP (CS224n)', org:'Chung-Ang Univ., LILAB',
     desc:'Natural Language Processing study with Prof. Hwan-hee Lee, Dept. of AI.',
-    color:'#5b8c5a', track:1 },
+    color:'#2155A4', track:2 },
   { id:'measure', start:'2024.06', end:'2024.08', title:'Study Measure Theory', org:'Chung-Ang Univ.',
     desc:'With Prof. Young-hoon Hong, Dept. of Mathematics.',
-    color:'#5b8c5a', track:2 },
+    color:'#2155A4', track:3 },
   { id:'dram', start:'2024.11', end:'2024.12', title:'Study DRAM Circuit Design', org:'Chung-Ang Univ.',
     desc:'With Prof. Donghyeon Han, Dept. of EE.',
-    color:'#5b8c5a', track:2 },
-  { id:'kaist', start:'2025.01', end:'2025.08', title:'Undergrad Intern', org:'KAIST AI, DAVIAN Lab',
+    color:'#2155A4', track:3 },
+  { id:'kaist_intern', start:'2025.01', end:'2025.08', title:'Undergrad Intern', org:'KAIST AI, DAVIAN Lab',
     desc:'Prof. Jaegul Choo.',
-    color:'#e06c75', track:0 },
+    color:'#004187', track:0 },
   { id:'krafton', start:'2025.06', end:'2025.08', title:'DL Research Engineer Intern', org:'KRAFTON',
     desc:'Deep Learning Div., AI Audio Gen Team. Advised by Taehong Moon. Built dataset & preprocessing pipeline for TTS and SLM/ALM.',
     color:'#d19a66', track:1 },
   { id:'naver', start:'2025.10', end:'2026.04', title:'Foundation Research Residency', org:'NAVER Cloud',
-    desc:'WBL project. Evaluating omni-model, data engineering in AudioLM & full-duplex model, researching continuous audio encoder.',
-    color:'#56b6c2', track:0 },
+    desc:'WBL (World Best Language model) project. Evaluating omni-model, data engineering in AudioLM & full-duplex model, researching continuous audio encoder.',
+    color:'#00C9B1', track:0 },
   { id:'qualcomm', start:'2026.04', end:'2026.10', title:'Speech AI Research Intern', org:'Qualcomm AI Research',
     desc:'Speech AI Research.',
-    color:'#c678dd', track:0 },
+    color:'#3253DC', track:0 },
 ];
 
+// ── Papers ──
 const papers = [
   { date:'2024.01', title:'Improving ASR Performance with OCR Through Using Word Frequency Difference', venue:'IEEE ICEIC 2024 (oral)', kw:'top', url:'https://doi.org/10.1109/ICEIC61013.2024.10457220', exp:'snu' },
   { date:'2024.02', title:'Enhancing ASR Performance through Relative Word Frequency in OCR and Normal Word Frequency Analysis', venue:'IEEE AICAS 2024 (oral)', kw:'top', url:'https://doi.org/10.1109/AICAS59952.2024.10595962', exp:'snu' },
@@ -258,10 +284,10 @@ const papers = [
   { date:'2024.10', title:'Analysis of GPT-3 Transformer Decoder Architecture', venue:'IEIE Fall 2024', kw:'misc', url:'https://www.researchgate.net/publication/384690504', exp:'snu' },
   { date:'2024.10', title:'Transformer Decoder & KV Cache Behavior During LLM Inference', venue:'ICEIC 2025', kw:'misc', url:null, exp:'snu' },
   { date:'2024.11', title:'Enhanced SiC Double-Trench MOSFETs', venue:'ICCE-Asia 2024', kw:'misc', url:'https://www.researchgate.net/publication/383794342', exp:'snu' },
-  { date:'2025.03', title:'Enhancing ASR & TTS with LLM for Accessible Math Learning', venue:'NVIDIA GTC 2025 poster', kw:'misc', url:'https://www.researchgate.net/publication/387274077', exp:'kaist' },
-  { date:'2025.05', title:'Talk to Your Slides: Slide Editing via Language-Driven Structured Data', venue:'arXiv preprint', kw:'misc', url:'https://arxiv.org/abs/2505.11604', exp:'kaist' },
-  { date:'2025.05', title:'Delving into LLMs for Effective Time-Series Anomaly Detection', venue:'NeurIPS 2025', kw:'top', url:'https://openreview.net/forum?id=6rpy7X1Of8', exp:'kaist' },
-  { date:'2025.05', title:'FFT-Based Spectral & Temporal Gradient Filtering for DP', venue:'CIKM 2025 Workshop', kw:'top', url:'https://arxiv.org/abs/2505.04468', exp:'kaist' },
+  { date:'2025.03', title:'Enhancing ASR & TTS with LLM for Accessible Math Learning', venue:'NVIDIA GTC 2025 poster', kw:'misc', url:'https://www.researchgate.net/publication/387274077', exp:'kaist_intern' },
+  { date:'2025.05', title:'Talk to Your Slides: Slide Editing via Language-Driven Structured Data', venue:'arXiv preprint', kw:'misc', url:'https://arxiv.org/abs/2505.11604', exp:'kaist_intern' },
+  { date:'2025.05', title:'Delving into LLMs for Effective Time-Series Anomaly Detection', venue:'NeurIPS 2025', kw:'top', url:'https://openreview.net/forum?id=6rpy7X1Of8', exp:'kaist_intern' },
+  { date:'2025.05', title:'FFT-Based Spectral & Temporal Gradient Filtering for DP', venue:'CIKM 2025 Workshop', kw:'top', url:'https://arxiv.org/abs/2505.04468', exp:'kaist_intern' },
   { date:'2026.01', title:'HyperCLOVA X 32B Think', venue:'arXiv (NAVER Cloud)', kw:'misc', url:'https://arxiv.org/abs/2601.03286', exp:'naver' },
   { date:'2026.01', title:'HyperCLOVA X 8B Omni', venue:'arXiv (NAVER Cloud)', kw:'misc', url:'https://arxiv.org/abs/2601.01792', exp:'naver' },
   { date:'2026.03', title:'OmniACBench: Benchmark for Acoustic Control in Omni-Modal Models', venue:'ARR March submitted', kw:'top', url:'https://arxiv.org/abs/2603.23938', exp:'naver' },
@@ -284,6 +310,7 @@ canvas.appendChild(axis);
 for (let y = START_YEAR; y <= END_YEAR; y++) {
   for (let q = 0; q < 4; q++) {
     const m = q * 3 + 1;
+    if (y === END_YEAR && m > END_MONTH) break;
     const x = d2x(`${y}.${String(m).padStart(2,'0')}`);
     if (q === 0) {
       const el = document.createElement('div');
@@ -302,36 +329,46 @@ for (let y = START_YEAR; y <= END_YEAR; y++) {
   }
 }
 
-// Track Y positions (above axis)
-const trackY = [AXIS_Y - 60, AXIS_Y - 114, AXIS_Y - 168];
+// Education backbone bars
+education.forEach(edu => {
+  const x1 = d2x(edu.start);
+  const x2 = d2x(edu.end);
+  const bar = document.createElement('div');
+  bar.className = 'edu-bar';
+  bar.style.left = x1 + 'px';
+  bar.style.width = (x2 - x1) + 'px';
+  bar.style.top = EDU_Y + 'px';
+  bar.style.background = edu.color;
+  bar.textContent = edu.label;
+  canvas.appendChild(bar);
+});
 
 // Experience bars
 experiences.forEach(exp => {
   const x1 = d2x(exp.start);
   const x2 = d2x(exp.end);
-  const y = trackY[exp.track];
+  const y = EXP_Y_BASE + exp.track * EXP_TRACK_H;
 
   const bar = document.createElement('div');
   bar.className = 'exp-bar';
   bar.style.left = x1 + 'px';
   bar.style.width = Math.max(x2 - x1, 70) + 'px';
   bar.style.top = y + 'px';
-  bar.style.background = `linear-gradient(135deg, ${exp.color}, ${exp.color}bb)`;
-  bar.style.borderColor = exp.color;
-  bar.style.boxShadow = `0 2px 16px ${exp.color}22`;
+  bar.style.background = exp.color;
+  bar.style.boxShadow = `0 2px 8px ${exp.color}22`;
 
   const label = document.createElement('span');
   label.textContent = `${exp.org} — ${exp.title}`;
-  label.style.overflow = 'hidden';
-  label.style.textOverflow = 'ellipsis';
+  label.style.cssText = 'overflow:hidden;text-overflow:ellipsis';
   bar.appendChild(label);
 
-  // Connector line from bar bottom to axis
+  // Connector to axis
   const conn = document.createElement('div');
   conn.className = 'connector';
-  conn.style.left = (x1 + 18) + 'px';
-  conn.style.top = (y + 42) + 'px';
-  conn.style.height = (AXIS_Y - y - 42) + 'px';
+  conn.style.left = (x1 + 16) + 'px';
+  conn.style.top = (y + 36) + 'px';
+  conn.style.height = (AXIS_Y - y - 36) + 'px';
+  conn.style.background = `${exp.color}33`;
   canvas.appendChild(conn);
 
   bar.addEventListener('mouseenter', e => showExpTooltip(e, exp));
@@ -340,20 +377,17 @@ experiences.forEach(exp => {
   canvas.appendChild(bar);
 });
 
-// ── Paper layout algorithm (below axis, collision-free) ──
-// Sort papers by x position
+// ── Paper layout (below axis, collision-free) ──
 const sortedPapers = papers.map((p, i) => ({ ...p, idx: i, x: d2x(p.date) }))
   .sort((a, b) => a.x - b.x || a.idx - b.idx);
 
-// Greedy row assignment
-const rows = []; // each row: array of { left, right }
+const rows = [];
 sortedPapers.forEach(p => {
   const left = p.x - CARD_W / 2;
   const right = left + CARD_W + CARD_GAP;
   let placed = false;
   for (let r = 0; r < rows.length; r++) {
-    const conflict = rows[r].some(seg => !(right <= seg.left || left >= seg.right));
-    if (!conflict) {
+    if (!rows[r].some(seg => !(right <= seg.left || left >= seg.right))) {
       rows[r].push({ left, right });
       p.row = r;
       placed = true;
@@ -372,23 +406,20 @@ sortedPapers.forEach(p => {
   const cardX = p.x - CARD_W / 2;
   const cardY = paperBaseY + p.row * (CARD_H + CARD_GAP);
 
-  // Stem line from axis to card
   const stem = document.createElement('div');
   stem.className = 'paper-stem';
   stem.style.left = p.x + 'px';
   stem.style.top = (AXIS_Y + 2) + 'px';
   stem.style.height = (cardY - AXIS_Y - 2) + 'px';
   stem.style.background = p.kw === 'top'
-    ? 'linear-gradient(180deg, rgba(240,192,64,0.4), rgba(240,192,64,0.1))'
-    : 'linear-gradient(180deg, rgba(100,100,120,0.3), rgba(100,100,120,0.08))';
+    ? 'linear-gradient(180deg, rgba(200,133,10,0.35), rgba(200,133,10,0.08))'
+    : 'linear-gradient(180deg, rgba(136,136,136,0.25), rgba(136,136,136,0.05))';
   canvas.appendChild(stem);
 
-  // Card
   const card = document.createElement('div');
   card.className = `paper-card ${p.kw}`;
   card.style.left = cardX + 'px';
   card.style.top = cardY + 'px';
-
   card.innerHTML = `
     <div class="pc-title">${p.title}</div>
     <div class="pc-venue">${p.venue}</div>
@@ -397,14 +428,10 @@ sortedPapers.forEach(p => {
   card.addEventListener('mouseenter', e => showPaperTooltip(e, p));
   card.addEventListener('mousemove', moveTooltip);
   card.addEventListener('mouseleave', hideTooltip);
-  if (p.url) {
-    card.addEventListener('click', () => window.open(p.url, '_blank'));
-  }
-
+  if (p.url) card.addEventListener('click', () => window.open(p.url, '_blank'));
   canvas.appendChild(card);
 });
 
-// Set canvas height
 const maxRow = sortedPapers.reduce((m, p) => Math.max(m, p.row), 0);
 canvas.style.minHeight = (paperBaseY + (maxRow + 1) * (CARD_H + CARD_GAP) + 60) + 'px';
 
@@ -460,8 +487,8 @@ document.addEventListener('mousemove', e => {
 });
 document.addEventListener('mouseup', () => { isDrag = false; wrapper.style.cursor = 'grab'; });
 
-// Scroll to show 2024 area on load
-wrapper.scrollLeft = d2x('2023.06') - 200;
+// Scroll to 2024 on load
+wrapper.scrollLeft = d2x('2023.10') - 200;
 </script>
 </body>
 </html>
