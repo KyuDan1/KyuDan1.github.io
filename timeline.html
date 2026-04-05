@@ -667,11 +667,17 @@ document.addEventListener('mouseup', () => { isDrag = false; document.body.style
 function updateStickyLabels() {
   const sl = wrapper.scrollLeft;
   const pad = 14; // padding inside bar
+  const viewRight = sl + wrapper.clientWidth;
   stickyBars.forEach(({ bar, content, x1, x2: barW }) => {
+    const barRight = x1 + barW;
     const visStart = Math.max(sl, x1);
-    const offset = visStart - x1;
-    const maxOffset = Math.max(0, barW - content.scrollWidth - pad * 2);
-    content.style.transform = `translateX(${Math.min(offset, maxOffset)}px)`;
+    const visEnd = Math.min(viewRight, barRight);
+    const visWidth = Math.max(0, visEnd - visStart);
+    const contentW = content.scrollWidth;
+    // Center content within visible portion of the bar
+    const centerOffset = (visStart - x1) + (visWidth - contentW) / 2;
+    const clamped = Math.max(0, Math.min(centerOffset, barW - contentW - pad));
+    content.style.transform = `translateX(${clamped}px)`;
   });
 }
 wrapper.addEventListener('scroll', updateStickyLabels);
