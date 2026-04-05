@@ -231,9 +231,6 @@ const START_YEAR = 2023, START_MONTH = 1;
 const END_YEAR = 2027, END_MONTH = 3;
 const PX_PER_MONTH = 110;
 const PAD_LEFT = 80;
-const CARD_W = 175;
-const CARD_H = 56;
-const CARD_GAP = 6;
 
 const totalMonths = (END_YEAR - START_YEAR)*12 + (END_MONTH - START_MONTH);
 const CANVAS_W = PAD_LEFT + totalMonths * PX_PER_MONTH + 80;
@@ -246,13 +243,21 @@ function d2x(dateStr, isEnd) {
 }
 
 // ── Layout constants ──
-// Experience tracks (top area)
-const EXP_Y_BASE = 50;
+// Paper zone above experience bars
+const PAPER_CARD_W = 155;
+const PAPER_CARD_H = 44;
+const PAPER_GAP = 5;
+const PAPER_ZONE_TOP = 20;
+// Experience tracks below paper zone (adjusted after papers are laid out)
+let EXP_Y_BASE = 320; // will be recalculated
 const EXP_TRACK_H = 72;
-// Education backbone row (just above axis)
-const EDU_Y = EXP_Y_BASE + 4 * EXP_TRACK_H + 10;
-// Axis
-const AXIS_Y = EDU_Y + 56;
+const BAR_H = 36;
+// Education & axis (recalculated after EXP_Y_BASE)
+let EDU_Y, AXIS_Y;
+function recalcLayout() {
+  EDU_Y = EXP_Y_BASE + 4 * EXP_TRACK_H + 10;
+  AXIS_Y = EDU_Y + 56;
+}
 
 // ── Education (backbone) ──
 const education = [
@@ -297,8 +302,8 @@ const experiences = [
 
 // ── Papers ──
 const papers = [
-  { date:'2024.01', title:'Improving ASR Performance with OCR Through Using Word Frequency Difference', venue:'IEEE ICEIC 2024 (oral)', kw:'top', url:'https://doi.org/10.1109/ICEIC61013.2024.10457220', exp:'snu' },
-  { date:'2024.02', title:'Enhancing ASR Performance through Relative Word Frequency in OCR and Normal Word Frequency Analysis', venue:'IEEE AICAS 2024 (oral)', kw:'top', url:'https://doi.org/10.1109/AICAS59952.2024.10595962', exp:'snu' },
+  { date:'2024.01', title:'Improving ASR Performance with OCR Through Using Word Frequency Difference', venue:'IEEE ICEIC 2024 (oral)', kw:'top', url:'https://doi.org/10.1109/ICEIC61013.2024.10457220', exp:'snu', sharedExp:'nvidia' },
+  { date:'2024.02', title:'Enhancing ASR Performance through Relative Word Frequency in OCR and Normal Word Frequency Analysis', venue:'IEEE AICAS 2024 (oral)', kw:'top', url:'https://doi.org/10.1109/AICAS59952.2024.10595962', exp:'snu', sharedExp:'nvidia' },
   { date:'2024.05', title:'Matrix Decomposition and Transformation for AI Semiconductors', venue:'IEIE Summer 2024', kw:'misc', url:'https://www.dbpia.co.kr/journal/articleDetail?nodeId=NODE11890778', exp:'snu' },
   { date:'2024.07', title:'MathSpeech: Leveraging Small LMs for Accurate Conversion in Mathematical Speech-to-Formula', venue:'AAAI 2025 (23.5% acc.)', kw:'top', url:'https://arxiv.org/abs/2412.15655', exp:'snu' },
   { date:'2024.08', title:'MathBridge: Translating Spoken Math Expressions into LaTeX', venue:'arXiv preprint', kw:'misc', url:'https://arxiv.org/abs/2408.07081', exp:'snu' },
@@ -324,6 +329,39 @@ const papers = [
 const canvas = document.getElementById('timelineCanvas');
 canvas.style.width = CANVAS_W + 'px';
 
+// ── Step 1: Layout papers above experience bars ──
+const sortedPapers = papers.map((p, i) => ({ ...p, idx: i, x: d2x(p.date) }))
+  .sort((a, b) => a.x - b.x || a.idx - b.idx);
+
+// Collision-free row assignment (rows grow upward from bottom)
+const paperRows = [];
+sortedPapers.forEach(p => {
+  const left = p.x - PAPER_CARD_W / 2;
+  const right = left + PAPER_CARD_W + PAPER_GAP;
+  let placed = false;
+  for (let r = 0; r < paperRows.length; r++) {
+    if (!paperRows[r].some(seg => !(right <= seg.left || left >= seg.right))) {
+      paperRows[r].push({ left, right });
+      p.row = r;
+      placed = true;
+      break;
+    }
+  }
+  if (!placed) {
+    p.row = paperRows.length;
+    paperRows.push([{ left, right }]);
+  }
+});
+
+const numPaperRows = paperRows.length;
+// Papers grow upward: row 0 is closest to bars
+// paperBottomY is the bottom of the paper zone (just above experience bars)
+const paperZoneHeight = numPaperRows * (PAPER_CARD_H + PAPER_GAP);
+EXP_Y_BASE = PAPER_ZONE_TOP + paperZoneHeight + 30;
+recalcLayout();
+
+// ── Step 2: Draw everything ──
+
 // Axis
 const axis = document.createElement('div');
 axis.className = 'time-axis';
@@ -331,11 +369,8 @@ axis.style.top = AXIS_Y + 'px';
 canvas.appendChild(axis);
 
 // Row labels
-const rowLabels = [
-  { label: 'Experience', y: EXP_Y_BASE + 10 },
-  { label: 'Education', y: EDU_Y + 10 },
-];
-rowLabels.forEach(r => {
+[{ label: 'Experience', y: EXP_Y_BASE + 10 },
+ { label: 'Education', y: EDU_Y + 10 }].forEach(r => {
   const el = document.createElement('div');
   el.className = 'row-label';
   el.style.top = r.y + 'px';
@@ -356,7 +391,6 @@ for (let y = START_YEAR; y <= END_YEAR; y++) {
       el.style.top = (AXIS_Y - 8) + 'px';
       el.innerHTML = `<div class="tick"></div><div class="label">${y}</div>`;
       canvas.appendChild(el);
-      // Vertical year line (2024, 2025, 2026)
       if (y >= 2024 && y <= 2026) {
         const line = document.createElement('div');
         line.style.cssText = `position:absolute;left:${x}px;top:0;width:1px;height:${AXIS_Y}px;background:rgba(0,0,0,0.07);z-index:0;`;
@@ -388,17 +422,18 @@ education.forEach(edu => {
   const eduLabel = document.createElement('span');
   eduLabel.textContent = edu.label;
   bar.appendChild(eduLabel);
-  // Date labels
   const ds = document.createElement('span'); ds.className = 'bar-date start'; ds.textContent = edu.start + (edu.startNote ? ' ' + edu.startNote : ''); bar.appendChild(ds);
   const de = document.createElement('span'); de.className = 'bar-date end'; de.textContent = edu.end; bar.appendChild(de);
   canvas.appendChild(bar);
 });
 
-// Experience bars
+// Experience bars (store positions for paper stems)
+const expBarPositions = {};
 experiences.forEach(exp => {
   const x1 = d2x(exp.start, false);
   const x2 = d2x(exp.end, true);
   const y = EXP_Y_BASE + exp.track * EXP_TRACK_H;
+  expBarPositions[exp.id] = { x1, x2, y, color: exp.color, track: exp.track };
 
   const bar = document.createElement('div');
   bar.className = 'exp-bar';
@@ -409,13 +444,15 @@ experiences.forEach(exp => {
   bar.style.boxShadow = `0 2px 8px ${exp.color}22`;
 
   if (exp.logo) {
-    const img = document.createElement('img'); img.className = 'bar-logo' + (exp.logoSm ? ' logo-sm' : '') + (exp.logoNoFilter ? ' logo-no-filter' : ''); img.src = exp.logo; img.alt = ''; bar.appendChild(img);
+    const img = document.createElement('img');
+    img.className = 'bar-logo' + (exp.logoSm ? ' logo-sm' : '') + (exp.logoNoFilter ? ' logo-no-filter' : '');
+    img.src = exp.logo; img.alt = '';
+    bar.appendChild(img);
   }
   const label = document.createElement('span');
   label.textContent = `${exp.org} — ${exp.title}`;
   label.style.cssText = 'overflow:hidden;text-overflow:ellipsis';
   bar.appendChild(label);
-  // Date labels above bar
   const ds = document.createElement('span'); ds.className = 'bar-date start'; ds.textContent = exp.start; bar.appendChild(ds);
   const de = document.createElement('span'); de.className = 'bar-date end'; de.textContent = exp.end; bar.appendChild(de);
 
@@ -423,8 +460,8 @@ experiences.forEach(exp => {
   const conn = document.createElement('div');
   conn.className = 'connector';
   conn.style.left = (x1 + 16) + 'px';
-  conn.style.top = (y + 36) + 'px';
-  conn.style.height = (AXIS_Y - y - 36) + 'px';
+  conn.style.top = (y + BAR_H) + 'px';
+  conn.style.height = (AXIS_Y - y - BAR_H) + 'px';
   conn.style.background = `${exp.color}33`;
   canvas.appendChild(conn);
 
@@ -434,49 +471,20 @@ experiences.forEach(exp => {
   canvas.appendChild(bar);
 });
 
-// ── Paper layout (below axis, collision-free) ──
-const sortedPapers = papers.map((p, i) => ({ ...p, idx: i, x: d2x(p.date) }))
-  .sort((a, b) => a.x - b.x || a.idx - b.idx);
-
-const rows = [];
-sortedPapers.forEach(p => {
-  const left = p.x - CARD_W / 2;
-  const right = left + CARD_W + CARD_GAP;
-  let placed = false;
-  for (let r = 0; r < rows.length; r++) {
-    if (!rows[r].some(seg => !(right <= seg.left || left >= seg.right))) {
-      rows[r].push({ left, right });
-      p.row = r;
-      placed = true;
-      break;
-    }
-  }
-  if (!placed) {
-    p.row = rows.length;
-    rows.push([{ left, right }]);
-  }
-});
-
-const paperBaseY = AXIS_Y + 28;
+// ── Paper cards (above experience bars) ──
+const paperBottomY = EXP_Y_BASE - 24;
 
 sortedPapers.forEach(p => {
-  const cardX = p.x - CARD_W / 2;
-  const cardY = paperBaseY + p.row * (CARD_H + CARD_GAP);
+  const cardX = p.x - PAPER_CARD_W / 2;
+  // row 0 = closest to bars (bottom), higher rows go up
+  const cardY = paperBottomY - (p.row + 1) * (PAPER_CARD_H + PAPER_GAP);
 
-  const stem = document.createElement('div');
-  stem.className = 'paper-stem';
-  stem.style.left = p.x + 'px';
-  stem.style.top = (AXIS_Y + 2) + 'px';
-  stem.style.height = (cardY - AXIS_Y - 2) + 'px';
-  stem.style.background = p.kw === 'top'
-    ? 'linear-gradient(180deg, rgba(200,133,10,0.35), rgba(200,133,10,0.08))'
-    : 'linear-gradient(180deg, rgba(136,136,136,0.25), rgba(136,136,136,0.05))';
-  canvas.appendChild(stem);
-
+  // Card
   const card = document.createElement('div');
   card.className = `paper-card ${p.kw}`;
   card.style.left = cardX + 'px';
   card.style.top = cardY + 'px';
+  card.style.width = PAPER_CARD_W + 'px';
   card.innerHTML = `
     <div class="pc-title">${p.title}</div>
     <div class="pc-venue">${p.venue}</div>
@@ -487,10 +495,41 @@ sortedPapers.forEach(p => {
   card.addEventListener('mouseleave', hideTooltip);
   if (p.url) card.addEventListener('click', () => window.open(p.url, '_blank'));
   canvas.appendChild(card);
+
+  // Stem from paper card bottom to experience bar top
+  const expPos = expBarPositions[p.exp];
+  if (expPos) {
+    const stemTop = cardY + PAPER_CARD_H;
+    const stemBottom = expPos.y;
+    const stemColor = p.kw === 'top'
+      ? 'rgba(200,133,10,0.3)' : 'rgba(136,136,136,0.2)';
+    const stem = document.createElement('div');
+    stem.className = 'paper-stem';
+    stem.style.left = p.x + 'px';
+    stem.style.top = stemTop + 'px';
+    stem.style.height = (stemBottom - stemTop) + 'px';
+    stem.style.background = stemColor;
+    canvas.appendChild(stem);
+  }
+
+  // Shared experience connector (e.g., SNU+NVIDIA)
+  if (p.sharedExp) {
+    const shared = expBarPositions[p.sharedExp];
+    if (shared) {
+      const stemTop = cardY + PAPER_CARD_H;
+      const stemBottom = shared.y;
+      const stem2 = document.createElement('div');
+      stem2.className = 'paper-stem';
+      stem2.style.left = (p.x + 6) + 'px';
+      stem2.style.top = stemTop + 'px';
+      stem2.style.height = (stemBottom - stemTop) + 'px';
+      stem2.style.background = `${shared.color}40`;
+      canvas.appendChild(stem2);
+    }
+  }
 });
 
-const maxRow = sortedPapers.reduce((m, p) => Math.max(m, p.row), 0);
-canvas.style.minHeight = (paperBaseY + (maxRow + 1) * (CARD_H + CARD_GAP) + 60) + 'px';
+canvas.style.minHeight = (AXIS_Y + 60) + 'px';
 
 // ── Tooltip ──
 const tooltip = document.getElementById('tooltip');
