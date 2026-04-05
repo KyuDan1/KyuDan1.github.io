@@ -118,6 +118,9 @@ body {
   filter: brightness(0) invert(1);
   object-fit: contain;
 }
+.bar-logo.logo-no-filter {
+  filter: none;
+}
 .bar-logo.logo-sm {
   height: 13px;
 }
@@ -275,7 +278,7 @@ const experiences = [
     color:'#0F0F70', track:0, logo:'images/snu.png' },
   { id:'nvidia', start:'2023.03', end:'2024.11', title:'Joint Research with NVIDIA Hyungon Ryu, NVIDIA Korea lead', org:'NVIDIA',
     desc:'Collaborated with Hyungon Ryu (Director, NVIDIA) on ASR and Speech AI research.',
-    color:'#76B900', track:1, logo:'images/nvidia.png' },
+    color:'#76B900', track:1, logo:'images/nvidia.png', logoNoFilter:true },
   { id:'neowine', start:'2023.07', end:'2023.08', title:'Research Intern', org:'Neowine Semiconductor circuit design team',
     desc:'Reviewing lecture materials for circuit design course using ChatGPT with Prof. Sang-ho Kim from Seoul National University.',
     color:'#7c6bc4', track:2 },
@@ -397,7 +400,7 @@ experiences.forEach(exp => {
   bar.style.boxShadow = `0 2px 8px ${exp.color}22`;
 
   if (exp.logo) {
-    const img = document.createElement('img'); img.className = 'bar-logo' + (exp.logoSm ? ' logo-sm' : ''); img.src = exp.logo; img.alt = ''; bar.appendChild(img);
+    const img = document.createElement('img'); img.className = 'bar-logo' + (exp.logoSm ? ' logo-sm' : '') + (exp.logoNoFilter ? ' logo-no-filter' : ''); img.src = exp.logo; img.alt = ''; bar.appendChild(img);
   }
   const label = document.createElement('span');
   label.textContent = `${exp.org} — ${exp.title}`;
