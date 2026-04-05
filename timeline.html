@@ -22,7 +22,7 @@
   --col-naver: #00C9B1;
   --col-qualcomm: #3253DC;
   --paper-speech: #F5C518;
-  --paper-nlp: #E9578A;
+  --paper-nlp: #F4A7C1;
   --paper-other: #999;
 }
 
@@ -156,6 +156,8 @@ body {
 .paper-card.nlp:hover { border-color: var(--paper-nlp); }
 .paper-card.other { border-left: 3px solid var(--paper-other); }
 .paper-card.other:hover { border-color: var(--paper-other); }
+.paper-card.speech-nlp { border-left: 3px solid; border-image: linear-gradient(180deg, var(--paper-speech), var(--paper-nlp)) 1; }
+.paper-card.speech-nlp:hover { border-color: var(--paper-speech); }
 .paper-card .pc-title {
   font-size: 0.64rem; font-weight: 600; line-height: 1.35;
   color: var(--text); display: -webkit-box;
@@ -167,6 +169,7 @@ body {
 }
 .paper-card.speech .pc-venue { color: var(--paper-speech); }
 .paper-card.nlp .pc-venue { color: var(--paper-nlp); }
+.paper-card.speech-nlp .pc-venue { background: linear-gradient(90deg, var(--paper-speech), var(--paper-nlp)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
 
 .paper-stem { position: absolute; width: 2px; z-index: 1; }
 
@@ -198,6 +201,8 @@ body {
 .tooltip .tt-tag.speech { background:rgba(245,197,24,0.15); color:var(--paper-speech); }
 .tooltip .tt-tag.nlp { background:rgba(233,87,138,0.15); color:var(--paper-nlp); }
 .tooltip .tt-tag.other { background:rgba(153,153,153,0.15); color:var(--paper-other); }
+.tooltip .tt-tag.speech-nlp { background:linear-gradient(90deg, rgba(245,197,24,0.15), rgba(244,167,193,0.15)); color:var(--paper-speech); }
+.tooltip .tt-venue.speech-nlp { background: linear-gradient(90deg, var(--paper-speech), var(--paper-nlp)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
 
 .row-label {
   position: absolute; left: 8px;
@@ -321,15 +326,15 @@ const papers = [
   { date:'2024.01', title:'Improving ASR Performance with OCR Through Using Word Frequency Difference', venue:'IEEE ICEIC 2024 (oral)', kw:'speech', url:'https://doi.org/10.1109/ICEIC61013.2024.10457220', exp:'snu', sharedExp:'nvidia' },
   { date:'2024.02', title:'Enhancing ASR Performance through Relative Word Frequency in OCR and Normal Word Frequency Analysis', venue:'IEEE AICAS 2024 (oral)', kw:'speech', url:'https://doi.org/10.1109/AICAS59952.2024.10595962', exp:'snu', sharedExp:'nvidia' },
   { date:'2024.05', title:'Matrix Decomposition and Transformation for AI Semiconductors', venue:'IEIE Summer 2024', kw:'other', url:'https://www.dbpia.co.kr/journal/articleDetail?nodeId=NODE11890778', exp:'snu', sharedExp:'nvidia' },
-  { date:'2024.07', title:'MathSpeech: Leveraging Small LMs for Accurate Conversion in Mathematical Speech-to-Formula', venue:'AAAI 2025 (23.5% acc.)', kw:'speech', url:'https://arxiv.org/abs/2412.15655', exp:'snu', sharedExp:'nvidia' },
-  { date:'2024.08', title:'MathBridge: Translating Spoken Math Expressions into LaTeX', venue:'arXiv preprint', kw:'speech', url:'https://arxiv.org/abs/2408.07081', exp:'snu', sharedExp:'nvidia', nudge:-20 },
+  { date:'2024.07', title:'MathSpeech: Leveraging Small LMs for Accurate Conversion in Mathematical Speech-to-Formula', venue:'AAAI 2025 (23.5% acc.)', kw:'speech-nlp', url:'https://arxiv.org/abs/2412.15655', exp:'snu', sharedExp:'nvidia' },
+  { date:'2024.08', title:'MathBridge: Translating Spoken Math Expressions into LaTeX', venue:'arXiv preprint', kw:'speech-nlp', url:'https://arxiv.org/abs/2408.07081', exp:'snu', sharedExp:'nvidia', nudge:-20 },
   { date:'2024.08', title:'Enhancing ASR via OCR Word Frequency: Theoretical Foundations', venue:'ICCE 2025 (oral)', kw:'speech', url:'https://arxiv.org/abs/2405.02995', exp:'snu', sharedExp:'nvidia' },
-  { date:'2024.09', title:'TeXBLEU: Automatic Metric for Evaluate LaTeX Format', venue:'ICASSP 2025 (oral)', kw:'nlp', url:'https://arxiv.org/abs/2409.06639', exp:'nvidia', sharedExp:'snu', nudge:100, trackRow:2 },
-  { date:'2024.09', title:'MathReader: Text-to-Speech for Mathematical Documents', venue:'ICASSP 2025 (oral)', kw:'speech', url:'https://arxiv.org/abs/2501.07088', exp:'snu', sharedExp:'nvidia', nudge:20 },
+  { date:'2024.09', title:'TeXBLEU: Automatic Metric for Evaluate LaTeX Format', venue:'ICASSP 2025 (oral)', kw:'speech-nlp', url:'https://arxiv.org/abs/2409.06639', exp:'nvidia', sharedExp:'snu', nudge:100, trackRow:2 },
+  { date:'2024.09', title:'MathReader: Text-to-Speech for Mathematical Documents', venue:'ICASSP 2025 (oral)', kw:'speech-nlp', url:'https://arxiv.org/abs/2501.07088', exp:'snu', sharedExp:'nvidia', nudge:20 },
   { date:'2024.10', title:'Analysis of GPT-3 Transformer Decoder Architecture', venue:'IEIE Fall 2024', kw:'other', url:'https://www.researchgate.net/publication/384690504', exp:'snu' },
   { date:'2024.11', title:'Transformer Decoder & KV Cache Behavior During LLM Inference', venue:'ICEIC 2025', kw:'other', url:null, exp:'snu' },
   { date:'2024.10', title:'Enhanced SiC Double-Trench MOSFETs', venue:'ICCE-Asia 2024', kw:'other', url:'https://www.researchgate.net/publication/383794342', exp:'edu_cau', zone:'middle' },
-  { date:'2024.01', title:'Enhancing ASR & TTS with LLM for Accessible Math Learning', venue:'NVIDIA GTC 2025 poster', kw:'speech', url:'https://www.researchgate.net/publication/387274077', exp:'snu', sharedExp:'nvidia', nudge:20 },
+  { date:'2024.01', title:'Enhancing ASR & TTS with LLM for Accessible Math Learning', venue:'NVIDIA GTC 2025 poster', kw:'speech-nlp', url:'https://www.researchgate.net/publication/387274077', exp:'snu', sharedExp:'nvidia', nudge:20 },
   { date:'2025.05', title:'Talk to Your Slides: Slide Editing via Language-Driven Structured Data', venue:'arXiv preprint', kw:'nlp', url:'https://arxiv.org/abs/2505.11604', exp:'kaist_intern' },
   { date:'2025.07', title:'Delving into LLMs for Effective Time-Series Anomaly Detection', venue:'NeurIPS 2025', kw:'nlp', url:'https://openreview.net/forum?id=6rpy7X1Of8', exp:'kaist_intern', sharedExp:'krafton' },
   { date:'2025.05', title:'FFT-Based Spectral & Temporal Gradient Filtering for DP', venue:'CIKM 2025 Workshop', kw:'other', url:'https://arxiv.org/abs/2505.04468', exp:'opennn', zone:'middle' },
@@ -685,7 +690,7 @@ function showExpTooltip(e, exp) {
 
 function showPaperTooltip(e, p) {
   tooltip.innerHTML = `
-    <div class="tt-tag ${p.kw}">${{speech:'Speech',nlp:'NLP',other:'Other'}[p.kw] || p.kw}</div>
+    <div class="tt-tag ${p.kw}">${{speech:'Speech',nlp:'NLP',other:'Other','speech-nlp':'Speech & NLP'}[p.kw] || p.kw}</div>
     <div class="tt-paper-title">${p.title}</div>
     <div class="tt-venue ${p.kw}">${p.venue}</div>
     <div class="tt-date">${p.date}</div>
