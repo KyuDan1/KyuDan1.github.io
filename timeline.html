@@ -95,7 +95,12 @@ body {
   color: #fff; z-index: 1; opacity: 0.92;
   cursor: default; overflow: visible;
 }
-.edu-bar > span:not(.bar-date) {
+.bar-content {
+  display: flex; align-items: center;
+  transition: transform 0.15s ease-out;
+  white-space: nowrap;
+}
+.bar-content > span {
   overflow: hidden; text-overflow: ellipsis;
 }
 
@@ -107,9 +112,6 @@ body {
   font-size: 0.68rem; font-weight: 600; letter-spacing: 0.2px;
   white-space: nowrap; overflow: visible;
   border: 1px solid transparent; z-index: 3; color: #fff;
-}
-.exp-bar > span:not(.bar-date) {
-  overflow: hidden; text-overflow: ellipsis;
 }
 .exp-bar:hover { transform: translateY(-2px); z-index:10; box-shadow: 0 4px 16px rgba(0,0,0,0.15); }
 
@@ -420,6 +422,7 @@ for (let y = START_YEAR; y <= END_YEAR; y++) {
 
 // Education backbone bars (store positions for paper stems)
 const expBarPositions = {};
+const stickyBars = [];
 education.forEach(edu => {
   const x1 = d2x(edu.start, false);
   const x2 = d2x(edu.end, true);
@@ -430,15 +433,18 @@ education.forEach(edu => {
   bar.style.width = (x2 - x1) + 'px';
   bar.style.top = EDU_Y + 'px';
   bar.style.background = edu.color;
+  const content = document.createElement('div'); content.className = 'bar-content';
   if (edu.logo) {
-    const img = document.createElement('img'); img.className = 'bar-logo'; img.src = edu.logo; img.alt = ''; bar.appendChild(img);
+    const img = document.createElement('img'); img.className = 'bar-logo'; img.src = edu.logo; img.alt = ''; content.appendChild(img);
   }
   const eduLabel = document.createElement('span');
   eduLabel.textContent = edu.label;
-  bar.appendChild(eduLabel);
+  content.appendChild(eduLabel);
+  bar.appendChild(content);
   const ds = document.createElement('span'); ds.className = 'bar-date start'; ds.textContent = edu.start + (edu.startNote ? ' ' + edu.startNote : ''); bar.appendChild(ds);
   const de = document.createElement('span'); de.className = 'bar-date end'; de.textContent = edu.end; bar.appendChild(de);
   canvas.appendChild(bar);
+  stickyBars.push({ bar, content, x1, x2: x2 - x1 });
 });
 
 // Experience bars
@@ -456,19 +462,22 @@ experiences.forEach(exp => {
   bar.style.background = exp.color;
   bar.style.boxShadow = `0 2px 8px ${exp.color}22`;
 
+  const content = document.createElement('div'); content.className = 'bar-content';
   if (exp.logo) {
     const img = document.createElement('img');
     img.className = 'bar-logo' + (exp.logoSm ? ' logo-sm' : '') + (exp.logoNoFilter ? ' logo-no-filter' : '');
     img.src = exp.logo; img.alt = '';
-    bar.appendChild(img);
+    content.appendChild(img);
   }
   const label = document.createElement('span');
   label.textContent = `${exp.org} — ${exp.title}`;
-  label.style.cssText = 'overflow:hidden;text-overflow:ellipsis';
-  bar.appendChild(label);
+  content.appendChild(label);
+  bar.appendChild(content);
+  const barW = Math.max(x2 - x1, 70);
   const fmtDate = s => s.split('.').slice(0,2).join('.');
   const ds = document.createElement('span'); ds.className = 'bar-date start'; ds.textContent = fmtDate(exp.start); bar.appendChild(ds);
   const de = document.createElement('span'); de.className = 'bar-date end'; de.textContent = fmtDate(exp.end); bar.appendChild(de);
+  stickyBars.push({ bar, content, x1, x2: barW });
 
   // Connector to axis
   const conn = document.createElement('div');
@@ -520,7 +529,7 @@ function renderPaper(p, cardY, stemDir) {
     stem.style.left = stemX + 'px';
     stem.style.top = top + 'px';
     stem.style.height = (bottom - top) + 'px';
-    stem.style.background = `${expPos.color}88`;
+    stem.style.background = expPos.color;
     canvas.appendChild(stem);
   }
 
@@ -535,7 +544,7 @@ function renderPaper(p, cardY, stemDir) {
       stem2.style.left = (stemX + 6) + 'px';
       stem2.style.top = top + 'px';
       stem2.style.height = (bottom - top) + 'px';
-      stem2.style.background = `${shared.color}66`;
+      stem2.style.background = shared.color;
       canvas.appendChild(stem2);
     }
   }
@@ -587,7 +596,7 @@ middlePapers.forEach(p => {
       stem.style.top = (cardY + PAPER_CARD_H) + 'px';
       stem.style.height = (pos.y - cardY - PAPER_CARD_H) + 'px';
     }
-    stem.style.background = `${pos.color}${i === 0 ? '88' : '66'}`;
+    stem.style.background = pos.color;
     canvas.appendChild(stem);
   });
 });
@@ -654,8 +663,22 @@ document.addEventListener('mousemove', e => {
 });
 document.addEventListener('mouseup', () => { isDrag = false; document.body.style.cursor = ''; });
 
+// ── Sticky bar labels ──
+function updateStickyLabels() {
+  const sl = wrapper.scrollLeft;
+  const pad = 14; // padding inside bar
+  stickyBars.forEach(({ bar, content, x1, x2: barW }) => {
+    const visStart = Math.max(sl, x1);
+    const offset = visStart - x1;
+    const maxOffset = Math.max(0, barW - content.scrollWidth - pad * 2);
+    content.style.transform = `translateX(${Math.min(offset, maxOffset)}px)`;
+  });
+}
+wrapper.addEventListener('scroll', updateStickyLabels);
+
 // Scroll to 2024 on load
 wrapper.scrollLeft = d2x('2023.10') - 200;
+updateStickyLabels();
 </script>
 </body>
 </html>
