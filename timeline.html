@@ -95,7 +95,7 @@ body {
   color: #fff; z-index: 1; opacity: 0.92;
   cursor: default; overflow: visible;
 }
-.edu-bar > span:first-child {
+.edu-bar > span:not(.bar-date) {
   overflow: hidden; text-overflow: ellipsis;
 }
 
@@ -108,10 +108,19 @@ body {
   white-space: nowrap; overflow: visible;
   border: 1px solid transparent; z-index: 3; color: #fff;
 }
-.exp-bar > span:first-child {
+.exp-bar > span:not(.bar-date) {
   overflow: hidden; text-overflow: ellipsis;
 }
 .exp-bar:hover { transform: translateY(-2px); z-index:10; box-shadow: 0 4px 16px rgba(0,0,0,0.15); }
+
+.bar-logo {
+  height: 18px; width: auto; margin-right: 7px; flex-shrink: 0;
+  filter: brightness(0) invert(1);
+  object-fit: contain;
+}
+.edu-bar .bar-logo {
+  height: 20px; margin-right: 8px;
+}
 
 .bar-date {
   position: absolute; top: -16px;
@@ -251,8 +260,8 @@ const AXIS_Y = EDU_Y + 56;
 
 // ── Education (backbone) ──
 const education = [
-  { id:'cau', start:'2023.01', end:'2025.08', startNote:'(2학년)', label:'Chung-Ang University, B.S. Mathematics & Next-Gen Semiconductor', color:'#2155A4' },
-  { id:'kaist', start:'2025.09', end:'2027.02', label:'KAIST, M.S., Ph.D. Integrated, Kim Jaechul Graduate School of AI at Korea Advanced Institute of Science and Technology (KAIST AI)', color:'#004187' },
+  { id:'cau', start:'2023.01', end:'2025.08', startNote:'(2학년)', label:'Chung-Ang University, B.S. Mathematics & Next-Gen Semiconductor', color:'#2155A4', logo:'images/CAU.png' },
+  { id:'kaist', start:'2025.09', end:'2027.02', label:'KAIST, M.S., Ph.D. Integrated, Kim Jaechul Graduate School of AI at Korea Advanced Institute of Science and Technology (KAIST AI)', color:'#004187', logo:'images/kaist.png' },
 ];
 
 // ── Experiences ──
@@ -260,34 +269,34 @@ const education = [
 const experiences = [
   { id:'snu', start:'2023.03', end:'2024.11', title:'Undergrad Intern with Prof. Nam-Joon Kim', org:'Seoul National University',
     desc:'Speech AI team with visiting Assoc. Prof. Nam-Joon Kim (alumni from Prof. Hyuk-Jae Lee). Co-researched with Seungmin Bae.',
-    color:'#0F0F70', track:0 },
+    color:'#0F0F70', track:0, logo:'images/snu.png' },
   { id:'nvidia', start:'2023.03', end:'2024.11', title:'Joint Research with NVIDIA Hyungon Ryu, NVIDIA Korea lead', org:'NVIDIA',
     desc:'Collaborated with Hyungon Ryu (Director, NVIDIA) on ASR and Speech AI research.',
-    color:'#76B900', track:1 },
+    color:'#76B900', track:1, logo:'images/nvidia.png' },
   { id:'neowine', start:'2023.07', end:'2023.08', title:'Research Intern', org:'Neowine Semiconductor circuit design team',
     desc:'Reviewing lecture materials for circuit design course using ChatGPT with Prof. Sang-ho Kim from Seoul National University.',
     color:'#7c6bc4', track:2 },
   { id:'nlp', start:'2024.06', end:'2024.08', title:'Study NLP (CS224n)', org:'CAU, Prof. Hwanhee Lee LILAB',
     desc:'Natural Language Processing study with Prof. Hwan-hee Lee, Dept. of AI.',
-    color:'#2155A4', track:2 },
+    color:'#2155A4', track:2, logo:'images/CAU.png' },
   { id:'measure', start:'2024.06', end:'2024.08', title:'Study Measure Theory', org:'CAU, Prof. Young-hoon Hong',
     desc:'With Prof. Young-hoon Hong, Dept. of Mathematics.',
-    color:'#2155A4', track:3 },
+    color:'#2155A4', track:3, logo:'images/CAU.png' },
   { id:'dram', start:'2024.11', end:'2024.12', title:'Study DRAM Circuit Design', org:'CAU, Prof. Donghyeon Han',
     desc:'With Prof. Donghyeon Han, Dept. of EE.',
-    color:'#2155A4', track:3 },
+    color:'#2155A4', track:3, logo:'images/CAU.png' },
   { id:'kaist_intern', start:'2025.01', end:'2025.08', title:'Undergrad Intern', org:'KAIST AI, Prof. Jaegul Choo, DAVIAN Lab',
     desc:'Prof. Jaegul Choo.',
-    color:'#004187', track:0 },
+    color:'#004187', track:0, logo:'images/kaist.png' },
   { id:'krafton', start:'2025.06', end:'2025.08', title:'DL Research Engineer Intern', org:'KRAFTON AI',
     desc:'Deep Learning Div., AI Audio Gen Team. Advised by Taehong Moon. Built dataset & preprocessing pipeline for TTS and SLM/ALM.',
     color:'#f9423a', track:1 },
   { id:'naver', start:'2025.10', end:'2026.04', title:'Foundation Research Residency', org:'NAVER Cloud Foundation Research Team',
     desc:'WBL (World Best Language model) project. Evaluating omni-model, data engineering in AudioLM & full-duplex model, researching continuous audio encoder.',
-    color:'#00D25A', track:0 },
+    color:'#00D25A', track:0, logo:'images/navercloud.svg' },
   { id:'qualcomm', start:'2026.04', end:'2026.10', title:'Speech AI Research Intern', org:'Qualcomm AI Research',
     desc:'Speech AI Research.',
-    color:'#3253DC', track:0 },
+    color:'#3253DC', track:0, logo:'images/Qualcomm.png' },
 ];
 
 // ── Papers ──
@@ -358,6 +367,9 @@ education.forEach(edu => {
   bar.style.width = (x2 - x1) + 'px';
   bar.style.top = EDU_Y + 'px';
   bar.style.background = edu.color;
+  if (edu.logo) {
+    const img = document.createElement('img'); img.className = 'bar-logo'; img.src = edu.logo; img.alt = ''; bar.appendChild(img);
+  }
   const eduLabel = document.createElement('span');
   eduLabel.textContent = edu.label;
   bar.appendChild(eduLabel);
@@ -381,6 +393,9 @@ experiences.forEach(exp => {
   bar.style.background = exp.color;
   bar.style.boxShadow = `0 2px 8px ${exp.color}22`;
 
+  if (exp.logo) {
+    const img = document.createElement('img'); img.className = 'bar-logo'; img.src = exp.logo; img.alt = ''; bar.appendChild(img);
+  }
   const label = document.createElement('span');
   label.textContent = `${exp.org} — ${exp.title}`;
   label.style.cssText = 'overflow:hidden;text-overflow:ellipsis';
