@@ -504,14 +504,12 @@ sortedPapers.forEach(p => {
   if (expPos) {
     const stemTop = cardY + PAPER_CARD_H;
     const stemBottom = expPos.y;
-    const stemColor = p.kw === 'top'
-      ? 'rgba(200,133,10,0.55)' : 'rgba(100,100,120,0.4)';
     const stem = document.createElement('div');
     stem.className = 'paper-stem';
     stem.style.left = p.x + 'px';
     stem.style.top = stemTop + 'px';
     stem.style.height = (stemBottom - stemTop) + 'px';
-    stem.style.background = stemColor;
+    stem.style.background = `${expPos.color}88`;
     canvas.appendChild(stem);
   }
 
