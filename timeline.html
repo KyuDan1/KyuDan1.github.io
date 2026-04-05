@@ -191,6 +191,12 @@ body {
 .tooltip .tt-tag.top { background:rgba(200,133,10,0.12); color:var(--paper-top); }
 .tooltip .tt-tag.misc { background:rgba(136,136,136,0.12); color:var(--paper-misc); }
 
+.row-label {
+  position: absolute; left: 8px;
+  font-size: 0.7rem; font-weight: 600; color: var(--text-dim);
+  letter-spacing: 0.3px; white-space: nowrap;
+}
+
 .back-link {
   position:fixed; top:18px; left:18px; color:var(--text-dim);
   text-decoration:none; font-size:0.85rem; z-index:50; transition:color 0.2s;
@@ -213,22 +219,6 @@ body {
   <div class="hint">Scroll horizontally &middot; Hover for details &middot; Click papers to open</div>
 </div>
 
-<div class="legend">
-  <div class="legend-item"><div class="legend-rect" style="background:#2155A4"></div>Chung-Ang Univ. (Undergrad)</div>
-  <div class="legend-item"><div class="legend-rect" style="background:#004187"></div>KAIST (Graduate)</div>
-  <div class="legend-item"><div class="legend-dot" style="background:#0F0F70"></div>Seoul National Univ.</div>
-  <div class="legend-item"><div class="legend-dot" style="background:#76B900"></div>NVIDIA</div>
-  <div class="legend-item"><div class="legend-dot" style="background:#7c6bc4"></div>Neowine</div>
-  <div class="legend-item"><div class="legend-dot" style="background:#f9423a"></div>KRAFTON</div>
-  <div class="legend-item"><div class="legend-dot" style="background:#00D25A"></div>NAVER Cloud</div>
-  <div class="legend-item"><div class="legend-dot" style="background:#3253DC"></div>Qualcomm AI</div>
-  <div class="legend-item">
-    <div class="legend-dot" style="border:2px solid #c8850a;background:transparent"></div>Top Venue
-  </div>
-  <div class="legend-item">
-    <div class="legend-dot" style="border:2px solid #888;background:transparent"></div>Other
-  </div>
-</div>
 
 <div class="timeline-wrapper" id="timelineWrapper">
   <div class="timeline-canvas" id="timelineCanvas"></div>
@@ -297,7 +287,7 @@ const experiences = [
   { id:'krafton', start:'2025.06', end:'2025.08', title:'DL Research Engineer Intern', org:'KRAFTON AI',
     desc:'Deep Learning Div., AI Audio Gen Team. Advised by Taehong Moon. Built dataset & preprocessing pipeline for TTS and SLM/ALM.',
     color:'#f9423a', track:1, logo:'images/KRAFTON.png' },
-  { id:'naver', start:'2025.10', end:'2026.04', title:'Foundation Research Residency', org:'NAVER Cloud Foundation Research Team',
+  { id:'naver', start:'2025.10', end:'2026.04', title:'WBL Project Residency', org:'NAVER Cloud Foundation Research Team',
     desc:'WBL (World Best Language model) project. Evaluating omni-model, data engineering in AudioLM & full-duplex model, researching continuous audio encoder.',
     color:'#00D25A', track:0, logo:'images/navercloud.svg', logoSm:true },
   { id:'qualcomm', start:'2026.04', end:'2026.10', title:'Speech AI Research Intern', org:'Qualcomm AI Research',
@@ -339,6 +329,19 @@ const axis = document.createElement('div');
 axis.className = 'time-axis';
 axis.style.top = AXIS_Y + 'px';
 canvas.appendChild(axis);
+
+// Row labels
+const rowLabels = [
+  { label: 'Experience', y: EXP_Y_BASE + 10 },
+  { label: 'Education', y: EDU_Y + 10 },
+];
+rowLabels.forEach(r => {
+  const el = document.createElement('div');
+  el.className = 'row-label';
+  el.style.top = r.y + 'px';
+  el.textContent = r.label;
+  canvas.appendChild(el);
+});
 
 // Year & quarter markers
 for (let y = START_YEAR; y <= END_YEAR; y++) {
