@@ -236,10 +236,12 @@ const totalMonths = (END_YEAR - START_YEAR)*12 + (END_MONTH - START_MONTH);
 const CANVAS_W = PAD_LEFT + totalMonths * PX_PER_MONTH + 80;
 
 function d2x(dateStr, isEnd) {
-  const [y, m] = dateStr.split('.').map(Number);
-  // start = 1st of month, end = last day of month (so add 1 month)
-  const extra = isEnd ? 1 : 0;
-  return PAD_LEFT + ((y - START_YEAR)*12 + (m - START_MONTH) + extra) * PX_PER_MONTH;
+  const parts = dateStr.split('.').map(Number);
+  const y = parts[0], m = parts[1], d = parts[2] || (isEnd ? 31 : 1);
+  // day fraction within the month (0~1)
+  const dayFrac = (d - 1) / 30;
+  const extra = isEnd && !parts[2] ? 1 : 0; // add 1 month for end dates without day
+  return PAD_LEFT + ((y - START_YEAR)*12 + (m - START_MONTH) + extra + dayFrac) * PX_PER_MONTH;
 }
 
 // ── Layout constants ──
@@ -292,10 +294,10 @@ const experiences = [
   { id:'krafton', start:'2025.06', end:'2025.08', title:'DL Research Engineer Intern', org:'KRAFTON AI',
     desc:'Deep Learning Div., AI Audio Gen Team. Advised by Taehong Moon. Built dataset & preprocessing pipeline for TTS and SLM/ALM.',
     color:'#f9423a', track:1, logo:'images/KRAFTON.png' },
-  { id:'naver', start:'2025.10', end:'2026.04', title:'WBL Project Residency', org:'NAVER Cloud Foundation Research Team',
+  { id:'naver', start:'2025.10', end:'2026.04.13', title:'WBL Project Residency', org:'NAVER Cloud Foundation Research Team',
     desc:'WBL (World Best Language model) project. Evaluating omni-model, data engineering in AudioLM & full-duplex model, researching continuous audio encoder.',
     color:'#00D25A', track:0, logo:'images/navercloud.svg', logoSm:true },
-  { id:'qualcomm', start:'2026.04', end:'2026.10', title:'Speech AI Research Intern', org:'Qualcomm AI Research',
+  { id:'qualcomm', start:'2026.04.20', end:'2026.10', title:'Speech AI Research Intern', org:'Qualcomm AI Research',
     desc:'Speech AI Research.',
     color:'#3253DC', track:0, logo:'images/qualcomm.png' },
 ];
