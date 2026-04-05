@@ -334,35 +334,40 @@ const papers = [
 const canvas = document.getElementById('timelineCanvas');
 canvas.style.width = CANVAS_W + 'px';
 
-// ── Step 1: Layout papers above experience bars ──
-const sortedPapers = papers.map((p, i) => ({ ...p, idx: i, x: d2x(p.date) }))
-  .sort((a, b) => a.x - b.x || a.idx - b.idx);
+// ── Step 1: Split papers into above (experience) and below (education) ──
+const allPapers = papers.map((p, i) => ({ ...p, idx: i, x: d2x(p.date) }));
+const abovePapers = allPapers.filter(p => !p.exp.startsWith('edu_')).sort((a, b) => a.x - b.x || a.idx - b.idx);
+const belowPapers = allPapers.filter(p => p.exp.startsWith('edu_')).sort((a, b) => a.x - b.x || a.idx - b.idx);
 
-// Collision-free row assignment (rows grow upward from bottom)
-const paperRows = [];
-sortedPapers.forEach(p => {
-  const left = p.x - PAPER_CARD_W / 2;
-  const right = left + PAPER_CARD_W + PAPER_GAP;
-  let placed = false;
-  for (let r = 0; r < paperRows.length; r++) {
-    if (!paperRows[r].some(seg => !(right <= seg.left || left >= seg.right))) {
-      paperRows[r].push({ left, right });
-      p.row = r;
-      placed = true;
-      break;
+// Collision-free row assignment helper
+function assignRows(pList, cardW, gap) {
+  const rows = [];
+  pList.forEach(p => {
+    const left = p.x - cardW / 2;
+    const right = left + cardW + gap;
+    let placed = false;
+    for (let r = 0; r < rows.length; r++) {
+      if (!rows[r].some(seg => !(right <= seg.left || left >= seg.right))) {
+        rows[r].push({ left, right });
+        p.row = r;
+        placed = true;
+        break;
+      }
     }
-  }
-  if (!placed) {
-    p.row = paperRows.length;
-    paperRows.push([{ left, right }]);
-  }
-});
+    if (!placed) {
+      p.row = rows.length;
+      rows.push([{ left, right }]);
+    }
+  });
+  return rows.length;
+}
 
-const numPaperRows = paperRows.length;
-// Papers grow upward: row 0 is closest to bars
-// paperBottomY is the bottom of the paper zone (just above experience bars)
-const paperZoneHeight = numPaperRows * (PAPER_CARD_H + PAPER_GAP);
-EXP_Y_BASE = PAPER_ZONE_TOP + paperZoneHeight + 30;
+const numAboveRows = assignRows(abovePapers, PAPER_CARD_W, PAPER_GAP);
+const numBelowRows = assignRows(belowPapers, PAPER_CARD_W, PAPER_GAP);
+
+// Papers above grow upward from experience bars
+const aboveZoneHeight = numAboveRows * (PAPER_CARD_H + PAPER_GAP);
+EXP_Y_BASE = PAPER_ZONE_TOP + aboveZoneHeight + 30;
 recalcLayout();
 
 // ── Step 2: Draw everything ──
@@ -478,19 +483,16 @@ experiences.forEach(exp => {
   canvas.appendChild(bar);
 });
 
-// ── Paper cards (above experience bars) ──
-const paperBottomY = EXP_Y_BASE - 24;
+// ── Paper cards ──
+const STEM_SHIFT = 5;
+const aboveBottomY = EXP_Y_BASE - 24;
+const belowTopY = AXIS_Y + 24;
 
-// Per-x offset: higher rows shift right so stems don't overlap
-const STEM_SHIFT = 5; // px shift per row
-
-sortedPapers.forEach(p => {
+function renderPaper(p, cardY, stemDir) {
   const xShift = p.row * STEM_SHIFT;
   const stemX = p.x + xShift;
   const cardX = stemX - PAPER_CARD_W / 2;
-  const cardY = paperBottomY - (p.row + 1) * (PAPER_CARD_H + PAPER_GAP);
 
-  // Card
   const card = document.createElement('div');
   card.className = `paper-card ${p.kw}`;
   card.style.left = cardX + 'px';
@@ -500,45 +502,57 @@ sortedPapers.forEach(p => {
     <div class="pc-title">${p.title}</div>
     <div class="pc-venue">${p.venue}</div>
   `;
-
   card.addEventListener('mouseenter', e => showPaperTooltip(e, p));
   card.addEventListener('mousemove', moveTooltip);
   card.addEventListener('mouseleave', hideTooltip);
   if (p.url) card.addEventListener('click', () => window.open(p.url, '_blank'));
   canvas.appendChild(card);
 
-  // Stem from paper card bottom to experience bar top
+  // Stem to primary bar
   const expPos = expBarPositions[p.exp];
   if (expPos) {
-    const stemTop = cardY + PAPER_CARD_H;
-    const stemBottom = expPos.y;
+    const top = stemDir === 'up' ? (cardY + PAPER_CARD_H) : (expPos.y + BAR_H);
+    const bottom = stemDir === 'up' ? expPos.y : cardY;
     const stem = document.createElement('div');
     stem.className = 'paper-stem';
     stem.style.left = stemX + 'px';
-    stem.style.top = stemTop + 'px';
-    stem.style.height = (stemBottom - stemTop) + 'px';
+    stem.style.top = top + 'px';
+    stem.style.height = (bottom - top) + 'px';
     stem.style.background = `${expPos.color}88`;
     canvas.appendChild(stem);
   }
 
-  // Shared experience connector (e.g., SNU+NVIDIA)
+  // Shared bar connector
   if (p.sharedExp) {
     const shared = expBarPositions[p.sharedExp];
     if (shared) {
-      const stemTop = cardY + PAPER_CARD_H;
-      const stemBottom = shared.y;
+      const top = stemDir === 'up' ? (cardY + PAPER_CARD_H) : (shared.y + BAR_H);
+      const bottom = stemDir === 'up' ? shared.y : cardY;
       const stem2 = document.createElement('div');
       stem2.className = 'paper-stem';
       stem2.style.left = (stemX + 6) + 'px';
-      stem2.style.top = stemTop + 'px';
-      stem2.style.height = (stemBottom - stemTop) + 'px';
+      stem2.style.top = top + 'px';
+      stem2.style.height = (bottom - top) + 'px';
       stem2.style.background = `${shared.color}66`;
       canvas.appendChild(stem2);
     }
   }
+}
+
+// Above papers (experience connections)
+abovePapers.forEach(p => {
+  const cardY = aboveBottomY - (p.row + 1) * (PAPER_CARD_H + PAPER_GAP);
+  renderPaper(p, cardY, 'up');
 });
 
-canvas.style.minHeight = (AXIS_Y + 60) + 'px';
+// Below papers (education connections)
+belowPapers.forEach(p => {
+  const cardY = belowTopY + p.row * (PAPER_CARD_H + PAPER_GAP);
+  renderPaper(p, cardY, 'down');
+});
+
+const belowMaxRow = belowPapers.reduce((m, p) => Math.max(m, p.row), -1);
+canvas.style.minHeight = (belowTopY + (belowMaxRow + 1) * (PAPER_CARD_H + PAPER_GAP) + 60) + 'px';
 
 // ── Tooltip ──
 const tooltip = document.getElementById('tooltip');
