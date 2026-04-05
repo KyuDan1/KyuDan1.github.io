@@ -97,7 +97,7 @@ body {
 }
 .bar-content {
   display: flex; align-items: center;
-  transition: transform 0.15s ease-out;
+  will-change: transform;
   white-space: nowrap;
 }
 .bar-content > span {
@@ -663,28 +663,51 @@ document.addEventListener('mousemove', e => {
 });
 document.addEventListener('mouseup', () => { isDrag = false; document.body.style.cursor = ''; });
 
-// ── Sticky bar labels ──
-function updateStickyLabels() {
-  const sl = wrapper.scrollLeft;
-  const pad = 14; // padding inside bar
-  const viewRight = sl + wrapper.clientWidth;
-  stickyBars.forEach(({ bar, content, x1, x2: barW }) => {
-    const barRight = x1 + barW;
-    const visStart = Math.max(sl, x1);
-    const visEnd = Math.min(viewRight, barRight);
-    const visWidth = Math.max(0, visEnd - visStart);
-    const contentW = content.scrollWidth;
-    // Center content within visible portion of the bar
-    const centerOffset = (visStart - x1) + (visWidth - contentW) / 2;
-    const clamped = Math.max(0, Math.min(centerOffset, barW - contentW - pad));
-    content.style.transform = `translateX(${clamped}px)`;
-  });
+// ── Sticky bar labels (smooth lerp) ──
+const PAD = 14;
+const LERP_SPEED = 0.12;
+// Store current animated offset per bar
+stickyBars.forEach(b => { b.current = 0; });
+
+function getTargetOffset(b, sl, viewW) {
+  const viewRight = sl + viewW;
+  const barRight = b.x1 + b.x2;
+  const visStart = Math.max(sl, b.x1);
+  const visEnd = Math.min(viewRight, barRight);
+  const visWidth = Math.max(0, visEnd - visStart);
+  const contentW = b.content.scrollWidth;
+  const centerOffset = (visStart - b.x1) + (visWidth - contentW) / 2;
+  return Math.max(0, Math.min(centerOffset, b.x2 - contentW - PAD));
 }
-wrapper.addEventListener('scroll', updateStickyLabels);
+
+function animateStickyLabels() {
+  const sl = wrapper.scrollLeft;
+  const viewW = wrapper.clientWidth;
+  let needsUpdate = false;
+  stickyBars.forEach(b => {
+    const target = getTargetOffset(b, sl, viewW);
+    const diff = target - b.current;
+    if (Math.abs(diff) > 0.5) {
+      b.current += diff * LERP_SPEED;
+      needsUpdate = true;
+    } else {
+      b.current = target;
+    }
+    b.content.style.transform = `translateX(${b.current}px)`;
+  });
+  if (needsUpdate) requestAnimationFrame(animateStickyLabels);
+}
+
+// Trigger animation on scroll
+wrapper.addEventListener('scroll', () => requestAnimationFrame(animateStickyLabels));
 
 // Scroll to 2024 on load
 wrapper.scrollLeft = d2x('2023.10') - 200;
-updateStickyLabels();
+// Init positions immediately
+stickyBars.forEach(b => {
+  b.current = getTargetOffset(b, wrapper.scrollLeft, wrapper.clientWidth);
+  b.content.style.transform = `translateX(${b.current}px)`;
+});
 </script>
 </body>
 </html>
