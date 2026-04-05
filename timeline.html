@@ -233,9 +233,11 @@ const CARD_GAP = 6;
 const totalMonths = (END_YEAR - START_YEAR)*12 + (END_MONTH - START_MONTH);
 const CANVAS_W = PAD_LEFT + totalMonths * PX_PER_MONTH + 80;
 
-function d2x(dateStr) {
+function d2x(dateStr, isEnd) {
   const [y, m] = dateStr.split('.').map(Number);
-  return PAD_LEFT + ((y - START_YEAR)*12 + (m - START_MONTH)) * PX_PER_MONTH;
+  // start = 1st of month, end = last day of month (so add 1 month)
+  const extra = isEnd ? 1 : 0;
+  return PAD_LEFT + ((y - START_YEAR)*12 + (m - START_MONTH) + extra) * PX_PER_MONTH;
 }
 
 // ── Layout constants ──
@@ -348,8 +350,8 @@ for (let y = START_YEAR; y <= END_YEAR; y++) {
 
 // Education backbone bars
 education.forEach(edu => {
-  const x1 = d2x(edu.start);
-  const x2 = d2x(edu.end);
+  const x1 = d2x(edu.start, false);
+  const x2 = d2x(edu.end, true);
   const bar = document.createElement('div');
   bar.className = 'edu-bar';
   bar.style.left = x1 + 'px';
@@ -367,8 +369,8 @@ education.forEach(edu => {
 
 // Experience bars
 experiences.forEach(exp => {
-  const x1 = d2x(exp.start);
-  const x2 = d2x(exp.end);
+  const x1 = d2x(exp.start, false);
+  const x2 = d2x(exp.end, true);
   const y = EXP_Y_BASE + exp.track * EXP_TRACK_H;
 
   const bar = document.createElement('div');
