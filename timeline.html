@@ -319,27 +319,27 @@ const papers = [
   { date:'2024.10', title:'MathReader: Text-to-Speech for Mathematical Documents', venue:'ICASSP 2025 (oral)', kw:'top', url:'https://arxiv.org/abs/2501.07088', exp:'snu', sharedExp:'nvidia' },
   { date:'2024.10', title:'Analysis of GPT-3 Transformer Decoder Architecture', venue:'IEIE Fall 2024', kw:'misc', url:'https://www.researchgate.net/publication/384690504', exp:'snu', sharedExp:'nvidia' },
   { date:'2024.10', title:'Transformer Decoder & KV Cache Behavior During LLM Inference', venue:'ICEIC 2025', kw:'misc', url:null, exp:'snu', sharedExp:'nvidia' },
-  { date:'2024.11', title:'Enhanced SiC Double-Trench MOSFETs', venue:'ICCE-Asia 2024', kw:'misc', url:'https://www.researchgate.net/publication/383794342', exp:'edu_cau' },
+  { date:'2024.09', title:'Enhanced SiC Double-Trench MOSFETs', venue:'ICCE-Asia 2024', kw:'misc', url:'https://www.researchgate.net/publication/383794342', exp:'edu_cau', zone:'middle' },
   { date:'2024.01', title:'Enhancing ASR & TTS with LLM for Accessible Math Learning', venue:'NVIDIA GTC 2025 poster', kw:'misc', url:'https://www.researchgate.net/publication/387274077', exp:'snu', sharedExp:'nvidia' },
   { date:'2025.05', title:'Talk to Your Slides: Slide Editing via Language-Driven Structured Data', venue:'arXiv preprint', kw:'misc', url:'https://arxiv.org/abs/2505.11604', exp:'kaist_intern' },
   { date:'2025.07', title:'Delving into LLMs for Effective Time-Series Anomaly Detection', venue:'NeurIPS 2025', kw:'top', url:'https://openreview.net/forum?id=6rpy7X1Of8', exp:'kaist_intern', sharedExp:'krafton' },
-  { date:'2025.05', title:'FFT-Based Spectral & Temporal Gradient Filtering for DP', venue:'CIKM 2025 Workshop', kw:'top', url:'https://arxiv.org/abs/2505.04468', exp:'opennn' },
+  { date:'2025.05', title:'FFT-Based Spectral & Temporal Gradient Filtering for DP', venue:'CIKM 2025 Workshop', kw:'top', url:'https://arxiv.org/abs/2505.04468', exp:'opennn', sharedExp:'kaist_intern', zone:'middle' },
   { date:'2026.01', title:'HyperCLOVA X 32B Think', venue:'arXiv (NAVER Cloud)', kw:'misc', url:'https://arxiv.org/abs/2601.03286', exp:'naver' },
   { date:'2026.01', title:'HyperCLOVA X 8B Omni', venue:'arXiv (NAVER Cloud)', kw:'misc', url:'https://arxiv.org/abs/2601.01792', exp:'naver' },
   { date:'2026.03', title:'OmniACBench: Benchmark for Acoustic Control in Omni-Modal Models', venue:'ARR March submitted', kw:'top', url:'https://arxiv.org/abs/2603.23938', exp:'naver' },
   { date:'2026.03', title:'SOMMELIER: Scalable Open Multi-turn Audio Pre-processing for Full-duplex SLMs', venue:'ACL Industry 2026 submitted', kw:'top', url:'https://arxiv.org/abs/2603.25750', exp:'naver' },
   { date:'2026.03', title:'SNAP: Speaker Nulling for Artifact Projection in Speech Deepfake Detection', venue:'INTERSPEECH 2026 submitted', kw:'top', url:'https://arxiv.org/abs/2603.20686', exp:'naver' },
-  { date:'2026.03', title:'SLICE: Speech Enhancement via Layer-wise Injection of Conditioning Embeddings', venue:'INTERSPEECH 2026 submitted', kw:'top', url:'https://arxiv.org/abs/2603.05302', exp:'edu_kaist' },
+  { date:'2026.03', title:'SLICE: Speech Enhancement via Layer-wise Injection of Conditioning Embeddings', venue:'INTERSPEECH 2026 submitted', kw:'top', url:'https://arxiv.org/abs/2603.05302', exp:'edu_kaist', sharedExp:'naver', zone:'middle' },
 ];
 
 // ── Render ──
 const canvas = document.getElementById('timelineCanvas');
 canvas.style.width = CANVAS_W + 'px';
 
-// ── Step 1: Split papers into above (experience) and below (education) ──
+// ── Step 1: Split papers into above, middle, below ──
 const allPapers = papers.map((p, i) => ({ ...p, idx: i, x: d2x(p.date) }));
-const abovePapers = allPapers.filter(p => !p.exp.startsWith('edu_')).sort((a, b) => a.x - b.x || a.idx - b.idx);
-const belowPapers = allPapers.filter(p => p.exp.startsWith('edu_')).sort((a, b) => a.x - b.x || a.idx - b.idx);
+const abovePapers = allPapers.filter(p => !p.zone || p.zone === 'above').sort((a, b) => a.x - b.x || a.idx - b.idx);
+const middlePapers = allPapers.filter(p => p.zone === 'middle').sort((a, b) => a.x - b.x || a.idx - b.idx);
 
 // Collision-free row assignment helper
 function assignRows(pList, cardW, gap) {
@@ -365,7 +365,7 @@ function assignRows(pList, cardW, gap) {
 }
 
 const numAboveRows = assignRows(abovePapers, PAPER_CARD_W, PAPER_GAP);
-const numBelowRows = assignRows(belowPapers, PAPER_CARD_W, PAPER_GAP);
+const numMiddleRows = assignRows(middlePapers, PAPER_CARD_W, PAPER_GAP);
 
 // Papers above grow upward from experience bars
 const aboveZoneHeight = numAboveRows * (PAPER_CARD_H + PAPER_GAP);
@@ -547,11 +547,49 @@ abovePapers.forEach(p => {
   renderPaper(p, cardY, 'up');
 });
 
-// Middle papers (education connections) — between experience and education bars
-const middleTopY = EDU_Y - (numBelowRows) * (PAPER_CARD_H + PAPER_GAP) - 20;
-belowPapers.forEach(p => {
+// Middle papers — between experience bars and education bar
+const middleTopY = EDU_Y - (numMiddleRows) * (PAPER_CARD_H + PAPER_GAP) - 20;
+middlePapers.forEach(p => {
+  const xShift = p.row * STEM_SHIFT;
+  const stemX = p.x + xShift;
+  const cardX = stemX - PAPER_CARD_W / 2;
   const cardY = middleTopY + p.row * (PAPER_CARD_H + PAPER_GAP);
-  renderPaper(p, cardY, 'down');
+
+  const card = document.createElement('div');
+  card.className = `paper-card ${p.kw}`;
+  card.style.left = cardX + 'px';
+  card.style.top = cardY + 'px';
+  card.style.width = PAPER_CARD_W + 'px';
+  card.innerHTML = `
+    <div class="pc-title">${p.title}</div>
+    <div class="pc-venue">${p.venue}</div>
+  `;
+  card.addEventListener('mouseenter', e => showPaperTooltip(e, p));
+  card.addEventListener('mousemove', moveTooltip);
+  card.addEventListener('mouseleave', hideTooltip);
+  if (p.url) card.addEventListener('click', () => window.open(p.url, '_blank'));
+  canvas.appendChild(card);
+
+  // Connect to all related bars (up and down)
+  [p.exp, p.sharedExp].forEach((eid, i) => {
+    if (!eid) return;
+    const pos = expBarPositions[eid];
+    if (!pos) return;
+    const stem = document.createElement('div');
+    stem.className = 'paper-stem';
+    stem.style.left = (stemX + i * 6) + 'px';
+    if (pos.y < cardY) {
+      // Bar is above → stem goes up
+      stem.style.top = (pos.y + BAR_H) + 'px';
+      stem.style.height = (cardY - pos.y - BAR_H) + 'px';
+    } else {
+      // Bar is below → stem goes down
+      stem.style.top = (cardY + PAPER_CARD_H) + 'px';
+      stem.style.height = (pos.y - cardY - PAPER_CARD_H) + 'px';
+    }
+    stem.style.background = `${pos.color}${i === 0 ? '88' : '66'}`;
+    canvas.appendChild(stem);
+  });
 });
 
 canvas.style.minHeight = (AXIS_Y + 60) + 'px';
