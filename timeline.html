@@ -339,10 +339,11 @@ const papers = [
 const canvas = document.getElementById('timelineCanvas');
 canvas.style.width = CANVAS_W + 'px';
 
-// ── Step 1: Split papers into above, middle, below ──
+// ── Step 1: Split papers into above, middle, trackRow ──
 const allPapers = papers.map((p, i) => ({ ...p, idx: i, x: d2x(p.date) + (p.nudge || 0) }));
-const abovePapers = allPapers.filter(p => !p.zone || p.zone === 'above').sort((a, b) => a.x - b.x || a.idx - b.idx);
+const abovePapers = allPapers.filter(p => (!p.zone || p.zone === 'above') && p.trackRow == null).sort((a, b) => a.x - b.x || a.idx - b.idx);
 const middlePapers = allPapers.filter(p => p.zone === 'middle').sort((a, b) => a.x - b.x || a.idx - b.idx);
+const trackRowPapers = allPapers.filter(p => p.trackRow != null).sort((a, b) => a.x - b.x || a.idx - b.idx);
 
 // Collision-free row assignment helper
 function assignRows(pList, cardW, gap) {
@@ -555,6 +556,59 @@ function renderPaper(p, cardY, stemDir) {
 abovePapers.forEach(p => {
   const cardY = aboveBottomY - (p.row + 1) * (PAPER_CARD_H + PAPER_GAP);
   renderPaper(p, cardY, 'up');
+});
+
+// Track-row papers (placed at a specific experience track level)
+// Collision-free per track
+const trackGroups = {};
+trackRowPapers.forEach(p => {
+  const t = p.trackRow;
+  if (!trackGroups[t]) trackGroups[t] = [];
+  trackGroups[t].push(p);
+});
+Object.keys(trackGroups).forEach(t => {
+  assignRows(trackGroups[t], PAPER_CARD_W, PAPER_GAP);
+});
+trackRowPapers.forEach(p => {
+  const baseY = EXP_Y_BASE + p.trackRow * EXP_TRACK_H;
+  const cardY = baseY + (p.row || 0) * (PAPER_CARD_H + PAPER_GAP);
+  const xShift = (p.row || 0) * STEM_SHIFT;
+  const stemX = p.x + xShift;
+  const cardX = stemX - PAPER_CARD_W / 2;
+
+  const card = document.createElement('div');
+  card.className = `paper-card ${p.kw}`;
+  card.style.left = cardX + 'px';
+  card.style.top = cardY + 'px';
+  card.style.width = PAPER_CARD_W + 'px';
+  card.innerHTML = `
+    <div class="pc-title">${p.title}</div>
+    <div class="pc-venue">${p.venue}</div>
+  `;
+  card.addEventListener('mouseenter', e => showPaperTooltip(e, p));
+  card.addEventListener('mousemove', moveTooltip);
+  card.addEventListener('mouseleave', hideTooltip);
+  if (p.url) card.addEventListener('click', () => window.open(p.url, '_blank'));
+  canvas.appendChild(card);
+
+  // Stems to connected bars
+  [p.exp, p.sharedExp].forEach((eid, i) => {
+    if (!eid) return;
+    const pos = expBarPositions[eid];
+    if (!pos) return;
+    const stem = document.createElement('div');
+    stem.className = 'paper-stem';
+    stem.style.left = (stemX + i * 6) + 'px';
+    if (pos.y < cardY) {
+      stem.style.top = (pos.y + BAR_H) + 'px';
+      stem.style.height = (cardY - pos.y - BAR_H) + 'px';
+    } else {
+      stem.style.top = (cardY + PAPER_CARD_H) + 'px';
+      stem.style.height = (pos.y - cardY - PAPER_CARD_H) + 'px';
+    }
+    stem.style.background = pos.color;
+    canvas.appendChild(stem);
+  });
 });
 
 // Middle papers — between experience bars and education bar
