@@ -455,8 +455,9 @@ experiences.forEach(exp => {
   label.textContent = `${exp.org} — ${exp.title}`;
   label.style.cssText = 'overflow:hidden;text-overflow:ellipsis';
   bar.appendChild(label);
-  const ds = document.createElement('span'); ds.className = 'bar-date start'; ds.textContent = exp.start; bar.appendChild(ds);
-  const de = document.createElement('span'); de.className = 'bar-date end'; de.textContent = exp.end; bar.appendChild(de);
+  const fmtDate = s => s.split('.').slice(0,2).join('.');
+  const ds = document.createElement('span'); ds.className = 'bar-date start'; ds.textContent = fmtDate(exp.start); bar.appendChild(ds);
+  const de = document.createElement('span'); de.className = 'bar-date end'; de.textContent = fmtDate(exp.end); bar.appendChild(de);
 
   // Connector to axis
   const conn = document.createElement('div');
