@@ -260,8 +260,10 @@ const EXP_TRACK_H = 72;
 const BAR_H = 36;
 // Education & axis (recalculated after EXP_Y_BASE)
 let EDU_Y, AXIS_Y;
+let numMiddleRows = 0;
 function recalcLayout() {
-  EDU_Y = EXP_Y_BASE + 4 * EXP_TRACK_H + 10;
+  const middleZoneH = numMiddleRows > 0 ? numMiddleRows * (PAPER_CARD_H + PAPER_GAP) + 16 : 0;
+  EDU_Y = EXP_Y_BASE + 4 * EXP_TRACK_H + 4 + middleZoneH;
   AXIS_Y = EDU_Y + 56;
 }
 
@@ -367,7 +369,7 @@ function assignRows(pList, cardW, gap) {
 }
 
 const numAboveRows = assignRows(abovePapers, PAPER_CARD_W, PAPER_GAP);
-const numMiddleRows = assignRows(middlePapers, PAPER_CARD_W, PAPER_GAP);
+numMiddleRows = assignRows(middlePapers, PAPER_CARD_W, PAPER_GAP);
 
 // Papers above grow upward from experience bars
 const aboveZoneHeight = numAboveRows * (PAPER_CARD_H + PAPER_GAP);
@@ -556,13 +558,14 @@ abovePapers.forEach(p => {
   renderPaper(p, cardY, 'up');
 });
 
-// Middle papers — between experience bars and education bar
-const middleTopY = EDU_Y - (numMiddleRows) * (PAPER_CARD_H + PAPER_GAP) - 20;
+// Middle papers — just below their connected experience bar
+// Find the lowest experience track bottom as starting point
+const middleBaseY = EXP_Y_BASE + 4 * EXP_TRACK_H + 4;
 middlePapers.forEach(p => {
   const xShift = p.row * STEM_SHIFT;
   const stemX = p.x + xShift;
   const cardX = stemX - PAPER_CARD_W / 2;
-  const cardY = middleTopY + p.row * (PAPER_CARD_H + PAPER_GAP);
+  const cardY = middleBaseY + p.row * (PAPER_CARD_H + PAPER_GAP);
 
   const card = document.createElement('div');
   card.className = `paper-card ${p.kw}`;
