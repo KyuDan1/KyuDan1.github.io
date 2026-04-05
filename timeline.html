@@ -418,6 +418,11 @@ for (let y = START_YEAR; y <= END_YEAR; y++) {
       el.style.left = x + 'px';
       el.style.top = (AXIS_Y - 3) + 'px';
       canvas.appendChild(el);
+      // Quarter label
+      const ql = document.createElement('div');
+      ql.style.cssText = `position:absolute;left:${x}px;top:${AXIS_Y+12}px;transform:translateX(-50%);font-size:0.62rem;font-family:'JetBrains Mono',monospace;color:var(--text-light);white-space:nowrap;`;
+      ql.textContent = `${y}.${String(m).padStart(2,'0')}`;
+      canvas.appendChild(ql);
     }
   }
 }
