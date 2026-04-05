@@ -21,8 +21,9 @@
   --col-krafton: #d19a66;
   --col-naver: #00C9B1;
   --col-qualcomm: #3253DC;
-  --paper-top: #c8850a;
-  --paper-misc: #888;
+  --paper-speech: #F5C518;
+  --paper-nlp: #E9578A;
+  --paper-other: #999;
 }
 
 * { margin:0; padding:0; box-sizing:border-box; }
@@ -149,10 +150,12 @@ body {
   transform: translateY(2px); z-index: 20;
   box-shadow: 0 4px 16px rgba(0,0,0,0.1);
 }
-.paper-card.top { border-left: 3px solid var(--paper-top); }
-.paper-card.top:hover { border-color: var(--paper-top); }
-.paper-card.misc { border-left: 3px solid var(--paper-misc); }
-.paper-card.misc:hover { border-color: var(--paper-misc); }
+.paper-card.speech { border-left: 3px solid var(--paper-speech); }
+.paper-card.speech:hover { border-color: var(--paper-speech); }
+.paper-card.nlp { border-left: 3px solid var(--paper-nlp); }
+.paper-card.nlp:hover { border-color: var(--paper-nlp); }
+.paper-card.other { border-left: 3px solid var(--paper-other); }
+.paper-card.other:hover { border-color: var(--paper-other); }
 .paper-card .pc-title {
   font-size: 0.64rem; font-weight: 600; line-height: 1.35;
   color: var(--text); display: -webkit-box;
@@ -162,7 +165,8 @@ body {
   font-size: 0.57rem; color: var(--text-dim); margin-top: 3px;
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
-.paper-card.top .pc-venue { color: var(--paper-top); }
+.paper-card.speech .pc-venue { color: var(--paper-speech); }
+.paper-card.nlp .pc-venue { color: var(--paper-nlp); }
 
 .paper-stem { position: absolute; width: 2px; z-index: 1; }
 
@@ -183,15 +187,17 @@ body {
 .tooltip .tt-desc { color: #555; font-size: 0.78rem; }
 .tooltip .tt-paper-title { font-weight:600; font-size:0.85rem; margin-bottom:4px; }
 .tooltip .tt-venue { font-size:0.75rem; color:var(--text-dim); margin-bottom:4px; }
-.tooltip .tt-venue.top { color: var(--paper-top); }
+.tooltip .tt-venue.speech { color: var(--paper-speech); }
+.tooltip .tt-venue.nlp { color: var(--paper-nlp); }
 .tooltip .tt-link { font-size:0.72rem; color:#2155A4; }
 .tooltip .tt-tag {
   display:inline-block; padding:2px 8px; border-radius:4px;
   font-size:0.63rem; font-weight:600; text-transform:uppercase;
   letter-spacing:0.5px; margin-bottom:5px;
 }
-.tooltip .tt-tag.top { background:rgba(200,133,10,0.12); color:var(--paper-top); }
-.tooltip .tt-tag.misc { background:rgba(136,136,136,0.12); color:var(--paper-misc); }
+.tooltip .tt-tag.speech { background:rgba(245,197,24,0.15); color:var(--paper-speech); }
+.tooltip .tt-tag.nlp { background:rgba(233,87,138,0.15); color:var(--paper-nlp); }
+.tooltip .tt-tag.other { background:rgba(153,153,153,0.15); color:var(--paper-other); }
 
 .row-label {
   position: absolute; left: 8px;
@@ -312,27 +318,27 @@ const experiences = [
 
 // ── Papers ──
 const papers = [
-  { date:'2024.01', title:'Improving ASR Performance with OCR Through Using Word Frequency Difference', venue:'IEEE ICEIC 2024 (oral)', kw:'top', url:'https://doi.org/10.1109/ICEIC61013.2024.10457220', exp:'snu', sharedExp:'nvidia' },
-  { date:'2024.02', title:'Enhancing ASR Performance through Relative Word Frequency in OCR and Normal Word Frequency Analysis', venue:'IEEE AICAS 2024 (oral)', kw:'top', url:'https://doi.org/10.1109/AICAS59952.2024.10595962', exp:'snu', sharedExp:'nvidia' },
-  { date:'2024.05', title:'Matrix Decomposition and Transformation for AI Semiconductors', venue:'IEIE Summer 2024', kw:'misc', url:'https://www.dbpia.co.kr/journal/articleDetail?nodeId=NODE11890778', exp:'snu', sharedExp:'nvidia' },
-  { date:'2024.07', title:'MathSpeech: Leveraging Small LMs for Accurate Conversion in Mathematical Speech-to-Formula', venue:'AAAI 2025 (23.5% acc.)', kw:'top', url:'https://arxiv.org/abs/2412.15655', exp:'snu', sharedExp:'nvidia' },
-  { date:'2024.08', title:'MathBridge: Translating Spoken Math Expressions into LaTeX', venue:'arXiv preprint', kw:'misc', url:'https://arxiv.org/abs/2408.07081', exp:'snu', sharedExp:'nvidia', nudge:-20 },
-  { date:'2024.08', title:'Enhancing ASR via OCR Word Frequency: Theoretical Foundations', venue:'ICCE 2025 (oral)', kw:'top', url:'https://arxiv.org/abs/2405.02995', exp:'snu', sharedExp:'nvidia' },
-  { date:'2024.09', title:'TeXBLEU: Automatic Metric for Evaluate LaTeX Format', venue:'ICASSP 2025 (oral)', kw:'top', url:'https://arxiv.org/abs/2409.06639', exp:'nvidia', sharedExp:'snu', nudge:100, trackRow:2 },
-  { date:'2024.09', title:'MathReader: Text-to-Speech for Mathematical Documents', venue:'ICASSP 2025 (oral)', kw:'top', url:'https://arxiv.org/abs/2501.07088', exp:'snu', sharedExp:'nvidia', nudge:20 },
-  { date:'2024.10', title:'Analysis of GPT-3 Transformer Decoder Architecture', venue:'IEIE Fall 2024', kw:'misc', url:'https://www.researchgate.net/publication/384690504', exp:'snu' },
-  { date:'2024.11', title:'Transformer Decoder & KV Cache Behavior During LLM Inference', venue:'ICEIC 2025', kw:'misc', url:null, exp:'snu' },
-  { date:'2024.10', title:'Enhanced SiC Double-Trench MOSFETs', venue:'ICCE-Asia 2024', kw:'misc', url:'https://www.researchgate.net/publication/383794342', exp:'edu_cau', zone:'middle' },
-  { date:'2024.01', title:'Enhancing ASR & TTS with LLM for Accessible Math Learning', venue:'NVIDIA GTC 2025 poster', kw:'misc', url:'https://www.researchgate.net/publication/387274077', exp:'snu', sharedExp:'nvidia', nudge:20 },
-  { date:'2025.05', title:'Talk to Your Slides: Slide Editing via Language-Driven Structured Data', venue:'arXiv preprint', kw:'misc', url:'https://arxiv.org/abs/2505.11604', exp:'kaist_intern' },
-  { date:'2025.07', title:'Delving into LLMs for Effective Time-Series Anomaly Detection', venue:'NeurIPS 2025', kw:'top', url:'https://openreview.net/forum?id=6rpy7X1Of8', exp:'kaist_intern', sharedExp:'krafton' },
-  { date:'2025.05', title:'FFT-Based Spectral & Temporal Gradient Filtering for DP', venue:'CIKM 2025 Workshop', kw:'top', url:'https://arxiv.org/abs/2505.04468', exp:'opennn', zone:'middle' },
-  { date:'2026.01', title:'HyperCLOVA X 32B Think', venue:'arXiv (NAVER Cloud)', kw:'misc', url:'https://arxiv.org/abs/2601.03286', exp:'naver' },
-  { date:'2026.01', title:'HyperCLOVA X 8B Omni', venue:'arXiv (NAVER Cloud)', kw:'misc', url:'https://arxiv.org/abs/2601.01792', exp:'naver', trackRow:1 },
-  { date:'2026.03', title:'OmniACBench: Benchmark for Acoustic Control in Omni-Modal Models', venue:'ARR March submitted', kw:'top', url:'https://arxiv.org/abs/2603.23938', exp:'naver' },
-  { date:'2026.03', title:'SOMMELIER: Scalable Open Multi-turn Audio Pre-processing for Full-duplex SLMs', venue:'ACL Industry 2026 submitted', kw:'top', url:'https://arxiv.org/abs/2603.25750', exp:'naver' },
-  { date:'2026.03', title:'SNAP: Speaker Nulling for Artifact Projection in Speech Deepfake Detection', venue:'INTERSPEECH 2026 submitted', kw:'top', url:'https://arxiv.org/abs/2603.20686', exp:'naver', sharedExp:'edu_kaist', trackRow:1 },
-  { date:'2026.03', title:'SLICE: Speech Enhancement via Layer-wise Injection of Conditioning Embeddings', venue:'INTERSPEECH 2026 submitted', kw:'top', url:'https://arxiv.org/abs/2603.05302', exp:'edu_kaist', zone:'middle' },
+  { date:'2024.01', title:'Improving ASR Performance with OCR Through Using Word Frequency Difference', venue:'IEEE ICEIC 2024 (oral)', kw:'speech', url:'https://doi.org/10.1109/ICEIC61013.2024.10457220', exp:'snu', sharedExp:'nvidia' },
+  { date:'2024.02', title:'Enhancing ASR Performance through Relative Word Frequency in OCR and Normal Word Frequency Analysis', venue:'IEEE AICAS 2024 (oral)', kw:'speech', url:'https://doi.org/10.1109/AICAS59952.2024.10595962', exp:'snu', sharedExp:'nvidia' },
+  { date:'2024.05', title:'Matrix Decomposition and Transformation for AI Semiconductors', venue:'IEIE Summer 2024', kw:'other', url:'https://www.dbpia.co.kr/journal/articleDetail?nodeId=NODE11890778', exp:'snu', sharedExp:'nvidia' },
+  { date:'2024.07', title:'MathSpeech: Leveraging Small LMs for Accurate Conversion in Mathematical Speech-to-Formula', venue:'AAAI 2025 (23.5% acc.)', kw:'speech', url:'https://arxiv.org/abs/2412.15655', exp:'snu', sharedExp:'nvidia' },
+  { date:'2024.08', title:'MathBridge: Translating Spoken Math Expressions into LaTeX', venue:'arXiv preprint', kw:'speech', url:'https://arxiv.org/abs/2408.07081', exp:'snu', sharedExp:'nvidia', nudge:-20 },
+  { date:'2024.08', title:'Enhancing ASR via OCR Word Frequency: Theoretical Foundations', venue:'ICCE 2025 (oral)', kw:'speech', url:'https://arxiv.org/abs/2405.02995', exp:'snu', sharedExp:'nvidia' },
+  { date:'2024.09', title:'TeXBLEU: Automatic Metric for Evaluate LaTeX Format', venue:'ICASSP 2025 (oral)', kw:'nlp', url:'https://arxiv.org/abs/2409.06639', exp:'nvidia', sharedExp:'snu', nudge:100, trackRow:2 },
+  { date:'2024.09', title:'MathReader: Text-to-Speech for Mathematical Documents', venue:'ICASSP 2025 (oral)', kw:'speech', url:'https://arxiv.org/abs/2501.07088', exp:'snu', sharedExp:'nvidia', nudge:20 },
+  { date:'2024.10', title:'Analysis of GPT-3 Transformer Decoder Architecture', venue:'IEIE Fall 2024', kw:'other', url:'https://www.researchgate.net/publication/384690504', exp:'snu' },
+  { date:'2024.11', title:'Transformer Decoder & KV Cache Behavior During LLM Inference', venue:'ICEIC 2025', kw:'other', url:null, exp:'snu' },
+  { date:'2024.10', title:'Enhanced SiC Double-Trench MOSFETs', venue:'ICCE-Asia 2024', kw:'other', url:'https://www.researchgate.net/publication/383794342', exp:'edu_cau', zone:'middle' },
+  { date:'2024.01', title:'Enhancing ASR & TTS with LLM for Accessible Math Learning', venue:'NVIDIA GTC 2025 poster', kw:'speech', url:'https://www.researchgate.net/publication/387274077', exp:'snu', sharedExp:'nvidia', nudge:20 },
+  { date:'2025.05', title:'Talk to Your Slides: Slide Editing via Language-Driven Structured Data', venue:'arXiv preprint', kw:'nlp', url:'https://arxiv.org/abs/2505.11604', exp:'kaist_intern' },
+  { date:'2025.07', title:'Delving into LLMs for Effective Time-Series Anomaly Detection', venue:'NeurIPS 2025', kw:'nlp', url:'https://openreview.net/forum?id=6rpy7X1Of8', exp:'kaist_intern', sharedExp:'krafton' },
+  { date:'2025.05', title:'FFT-Based Spectral & Temporal Gradient Filtering for DP', venue:'CIKM 2025 Workshop', kw:'other', url:'https://arxiv.org/abs/2505.04468', exp:'opennn', zone:'middle' },
+  { date:'2026.01', title:'HyperCLOVA X 32B Think', venue:'arXiv (NAVER Cloud)', kw:'nlp', url:'https://arxiv.org/abs/2601.03286', exp:'naver' },
+  { date:'2026.01', title:'HyperCLOVA X 8B Omni', venue:'arXiv (NAVER Cloud)', kw:'speech', url:'https://arxiv.org/abs/2601.01792', exp:'naver', trackRow:1 },
+  { date:'2026.03', title:'OmniACBench: Benchmark for Acoustic Control in Omni-Modal Models', venue:'ARR March submitted', kw:'speech', url:'https://arxiv.org/abs/2603.23938', exp:'naver' },
+  { date:'2026.03', title:'SOMMELIER: Scalable Open Multi-turn Audio Pre-processing for Full-duplex SLMs', venue:'ACL Industry 2026 submitted', kw:'speech', url:'https://arxiv.org/abs/2603.25750', exp:'naver' },
+  { date:'2026.03', title:'SNAP: Speaker Nulling for Artifact Projection in Speech Deepfake Detection', venue:'INTERSPEECH 2026 submitted', kw:'speech', url:'https://arxiv.org/abs/2603.20686', exp:'naver', sharedExp:'edu_kaist', trackRow:1 },
+  { date:'2026.03', title:'SLICE: Speech Enhancement via Layer-wise Injection of Conditioning Embeddings', venue:'INTERSPEECH 2026 submitted', kw:'speech', url:'https://arxiv.org/abs/2603.05302', exp:'edu_kaist', zone:'middle' },
 ];
 
 // ── Render ──
@@ -679,7 +685,7 @@ function showExpTooltip(e, exp) {
 
 function showPaperTooltip(e, p) {
   tooltip.innerHTML = `
-    <div class="tt-tag ${p.kw}">${p.kw === 'top' ? 'Top Venue' : 'Publication'}</div>
+    <div class="tt-tag ${p.kw}">${{speech:'Speech',nlp:'NLP',other:'Other'}[p.kw] || p.kw}</div>
     <div class="tt-paper-title">${p.title}</div>
     <div class="tt-venue ${p.kw}">${p.venue}</div>
     <div class="tt-date">${p.date}</div>
