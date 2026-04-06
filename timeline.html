@@ -764,8 +764,10 @@ function tick() {
   requestAnimationFrame(tick);
 }
 
-// Scroll to 2024 on load
-wrapper.scrollLeft = d2x('2023.10') - 200;
+// Scroll so current date is centered
+const now = new Date();
+const nowStr = now.getFullYear() + '.' + String(now.getMonth()+1).padStart(2,'0') + '.' + String(now.getDate()).padStart(2,'0');
+wrapper.scrollLeft = d2x(nowStr) - wrapper.clientWidth / 2;
 stickyBars.forEach(b => {
   b.current = getTargetOffset(b, wrapper.scrollLeft, wrapper.clientWidth);
 });
